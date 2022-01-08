@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/dfda23e54c.js" crossorigin="anonymous"></script>
+  <script>
+    async function getMessages()
+    {
+      let data = await fetch('/api/commentList')
+      let newData = await data.json()
+      
+      let arr = newData.data
+
+      let parent = document.getElementById('internal')
+      for(let counter = 0; counter < arr.length; counter++)
+      {
+        let newFirst = document.createElement('div')
+        let commentRow = document.createElement('div')
+        commentRow.className = "commentRow"
+        newFirst.className = "firstRow"
+        let newh2 = document.createElement('h2');
+        let newI = document.createElement('i')
+        newI.className = "fas fa-user-circle";
+        let nameNode = document.createTextNode(arr[counter].name); 
+        newh2.appendChild(newI)
+        newh2.appendChild(nameNode)
+        newFirst.appendChild(newh2)
+        let firstP = document.createElement('p')
+        let pText = document.createTextNode(arr[counter].comment)
+        firstP.appendChild(pText)
+        commentRow.appendChild(newFirst)
+        commentRow.appendChild(firstP)
+        parent.appendChild(commentRow)
+      }
+      /*
+      <div class="commentRow">
+          <div class="firstRow"><h2><i class="fas fa-user-circle"></i>Eli Weber</h2></div>
+          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Provident quasi ullam vero laudantium voluptate libero cum possimus harum eveniet recusandae nesciunt consequuntur nihil, obcaecati necessitatibus. Dignissimos a tempora eos deleniti!</p>
+          <p class="small">Posted 10/12/2021</p>
+        </div>
+      */
+      console.log(newData);
+    }
+    getMessages()
+  </script>
+  <style>
+    *
+    {
+      font-family: 'Open Sans', sans-serif;
+      color: rgb(90, 90, 247);
+    }
+    body, html
+    {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    #container
+    {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      background: #f2f2f2;
+    }
+    .messageBox
+    {
+      width: 400px;
+      height: 280px;
+      background: #f2f2f2;
+      box-shadow: 0 0 10px gray;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .messageBox:nth-of-type(1) div
+    {
+      display: flex;
+      align-items: flex-start;
+      margin-right: 15px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+    label
+    {
+      margin-right: 5px;
+    }
+    input, textarea
+    {
+      width: 300px;
+      border: none;
+      background: #e0dfdf;
+      z-index: 6;
+      border-radius: 5px;
+    }
+    #submit:hover{
+      cursor: pointer;
+    }
+    #internal
+    {
+      width: 90%;
+      height: 85%;
+      background: #e0dfdf;
+      border-radius: 5px;
+      padding: 0;
+      margin: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+    }
+    .commentRow
+    {
+      display: flex;
+      flex-direction: column;
+      margin-top: -100px;
+    }
+    .firstRow
+    {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -20px;
+      
+    }
+    i{
+      color: rgb(90, 90, 247);
+      font-size: 30px;
+
+      margin: 0;
+    }
+    p{
+      margin-top: -20px;
+      font-size: 15px;
+      color: gray;
+    }
+    .small{
+      font-size: 12px;
+      margin-top: 0px;
+    }
+    #internal > *
+    {
+      padding: 10px;
+    }
+    #likeDislike
+    {
+      display: flex;
+      position: absolute;
+      top: -30px;
+      left: 0;
+      justify-content: center;
+    }
+    #likeDislike > div
+    {
+      height: 40px;
+      width: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: rgb(90, 90, 247);
+      border-radius: 50%;
+      padding: 0;
+      margin: 0 5px;
+      position: relative;
+    }
+    #likeDislike i
+    {
+      font-size: 20px;
+    }
+    #likeDislike div:hover
+    {
+      cursor: pointer;
+    }
+    .counter
+    {
+      position: absolute;
+      top: -10px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <form class="messageBox">
+      <div><label for="namebox">Name:</label>
+        <input type="text" name="name" id="namebox"></div>
+        <div>
+          <label for="textBox">Message:</label><textarea name="comment" id="textBox" cols="30" rows="10"></textarea>
+        </div>
+        <input type="submit" id="submit" style="width: auto; align-self: center; color: white; background: rgb(90, 90, 247); padding: 10px 15px; text-align: center;" >
+    </form>
+    <div class="messageBox" style="display: flex; justify-content: center; align-items: center; position: relative;">
+      <div id="internal">
+        
+      </div>
+      <div id="likeDislike">
+        <div onclick="reactions('likes')"><i class="fas fa-thumbs-up" style="color: white;"></i> <div class="counter" id="likes"></div></div>
+        <div onclick="reactions('dislikes')"><i class="fas fa-thumbs-down" style="color: white;"></i><div class="counter" id="dislikes"></div></div>
+        <div onclick="reactions('laughs')"><i class="fas fa-laugh-squint" style="color: white;"></i>
+          <div class="counter" id="laughs"></div>
+        </div>
+        <div onclick="reactions('cries')">
+          <i class="fas fa-sad-tear" style="color: white;"></i>
+          <div class="counter" id="cries"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+      integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      let likes;
+      let dislikes;
+      let laughs;
+      let cries;
+      document.getElementById('submit').addEventListener('click', async (e)=>
+      {
+        e.preventDefault()
+        const name = document.getElementById('namebox')
+        const comment = document.getElementById('textBox')
+        try
+        {
+          console.log(name.value);
+          const {data} = await axios.post('/api/comment', {name: name.value, comment: comment.value})
+          console.log(data);
+          name.value=""
+          comment.value=""
+          newPost(data)
+        }
+        catch(err)
+        {
+          alert('Could not post data.');
+          console.log(err);
+        }
+      })
+      async function getReactions()
+      {
+        const myData = await fetch('/api/reactions')
+        const jsonn = await myData.json()
+        console.log(jsonn);
+        let counterDivs = document.getElementsByClassName('counter')
+        likes = parseInt(jsonn.data.likes)
+        dislikes = parseInt(jsonn.data.dislikes)
+        laughs = parseInt(jsonn.data.laughs)
+        cries = parseInt(jsonn.data.cries)
+        let p = document.createElement('p')
+        let textNode = document.createTextNode(likes)
+        p.appendChild(textNode);
+        counterDivs[0].appendChild(p)
+        p = document.createElement('p')
+        textNode = document.createTextNode(dislikes)  
+        p.appendChild(textNode);
+        counterDivs[1].appendChild(p)
+         p = document.createElement('p')
+         textNode = document.createTextNode(laughs)
+        p.appendChild(textNode);
+        counterDivs[2].appendChild(p)
+         p = document.createElement('p')
+         textNode = document.createTextNode(cries)
+        p.appendChild(textNode);
+        counterDivs[3].appendChild(p)
+      }
+
+
+      getReactions()
+
+
+      async function reactions(param)
+      {
+        let parent = document.getElementById(param)
+        let child = document.querySelector('#' + param + ' p')
+        let myText = await fetch('/api/reactions',
+        {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({selector: param})
+        })
+        let jsonn = await myText.json()
+        console.log(jsonn);
+        parent.removeChild(child)
+        let newParagraph = document.createElement('p')
+        newParagraph.id = param
+        let newText = document.createTextNode(jsonn.data[`${param}`][`${param}`])
+        newParagraph.appendChild(newText)
+        parent.appendChild(newParagraph)
+      }
+
+      async function newPost(data)
+      {
+        let arr = data.data
+        let parent = document.getElementById('internal')
+        for(let counter = 0; counter < arr.length; counter++)
+        {
+          let newFirst = document.createElement('div')
+          let commentRow = document.createElement('div')
+          commentRow.className = "commentRow"
+          newFirst.className = "firstRow"
+          let newh2 = document.createElement('h2');
+          let newI = document.createElement('i')
+          newI.className = "fas fa-user-circle";
+          let nameNode = document.createTextNode(arr[counter].name); 
+          newh2.appendChild(newI)
+          newh2.appendChild(nameNode)
+          newFirst.appendChild(newh2)
+          let firstP = document.createElement('p')
+          let pText = document.createTextNode(arr[counter].comment)
+          firstP.appendChild(pText)
+          commentRow.appendChild(newFirst)
+          commentRow.appendChild(firstP)
+          parent.appendChild(commentRow)
+        }
+      }
+    </script>
+</body>
+</html>
