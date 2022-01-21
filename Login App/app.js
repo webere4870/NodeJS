@@ -1,3 +1,4 @@
+// Environment variables
 if(process.env.NODE_ENV !== "production")
 {
     // Load in environment variables
@@ -7,33 +8,146 @@ if(process.env.NODE_ENV !== "production")
 // Express
 const express = require('express')
 const app = express()
-const initializePassport = require('./passport-config.js')
-const flash = require('express-flash')
-const session = require('express-session')
-const expressLayouts = require('express-ejs-layouts')
-app.set('view engine', 'ejs');
-app.use(expressLayouts);
-app.use(express.urlencoded({extended: false}))
+app.listen(5000, ()=>
+{
+    console.log("Listening on port 5000");
+})
+
+// EJS
+const expressLayouts = require('express-ejs-layouts');
+
+// Hashing algorithms
+const bcrypt = require('bcrypt')
 
 //Passport
 const passport = require('passport')
-require('')
+const config = require('./passport-config.js')
+const flash = require('express-flash')
+const session = require('express-session')
 
-app.use(flash())
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    // Resave if nothing changes?
-    resave: false,
-    // Do you wanna save an empty value?
-    saveUninitialized: false
-}))
-app.use(passport.initialize())
-app.use(passport.session())
+// MongoDB
+const {MongoClient} = require('mongodb')
+const uri = require('./uri.js')
+const client = new MongoClient(uri)
 
-app.listen(5000, ()=>
+
+// Main function
+async function run()
 {
-    console.log("Listening on port 5000...");
-})
+
+    // Connect to database
+    await client.connect()
+    let db = client.db('Users').collection('Users')
+
+
+    // Configure passport
+    config(
+        passport,
+
+        async (email)=>
+        {
+            return await db.findOne({email: email})
+        },
+
+        async (id)=>
+        {
+            return await db.findOne({_id: id})
+        }
+    )
+
+
+    // Middleware
+    app.set('view engine', 'ejs')
+    app.set('views', __dirname + '/views')
+    app.use(expressLayouts)
+    app.use(express.urlencoded({extended: false}))
+
+
+    // Passport middleware
+    app.use(flash())
+    app.use(session({
+        secret: process.env.SESSION_SECRET,
+        // Resave if nothing changes?
+        resave: false,
+        // Do you wanna save an empty value?
+        saveUninitialized: false
+    }))
+    app.use(passport.initialize())
+    app.use(passport.session())
+
+    app.get('/login', checkNotAuthenticated,(req, res)=>
+    {
+        res.render('login')
+    })
+
+    app.get('/register', checkNotAuthenticated,(req, res)=>
+    {
+        res.render('register')
+    })
+
+    app.get('/', checkAuthenticated, (req, res)=>
+    {
+        res.render('index', {name: req.user.name})
+    })
+
+    app.post('/login', passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/login',
+        // Lets us have a flash message to display to our user
+        failureFlash: true
+    }))
+
+    app.post('/register', async (req, res)=>
+    {
+        try
+        {
+            const hashedPassword = await bcrypt.hash(req.body.password, 10);
+            const {name, email} = req.body
+            const newUser = {name: name, email: email, password: hashedPassword}
+            await db.insertOne(newUser)
+            res.redirect('login')
+        }
+        catch(e)
+        {
+            res.redirect('register')
+        }
+    })
+
+    app.post('/logout', (req, res)=>
+    {
+        req.logout()
+        req.logout()
+        req.session.destroy()
+        res.redirect('/login')
+    })
+
+    function checkAuthenticated(req, res, next)
+    {
+        if(req.isAuthenticated())
+        {
+            next()
+        }
+        else
+        {
+            res.redirect('/login')
+        }
+    }
+
+    function checkNotAuthenticated(req, res, next)
+    {
+        if(req.isAuthenticated())
+        {
+            res.redirect('index')
+        }
+        else
+        {
+            next()
+        }
+    }
+}
+
+run()
+
 
 /*
 
