@@ -24,9 +24,10 @@ const passport = require('passport')
 const config = require('./passport-config.js')
 const flash = require('express-flash')
 const session = require('express-session')
+const bodyParser = require('body-parser')
 
 // MongoDB
-const {MongoClient} = require('mongodb')
+const {MongoClient, ObjectId} = require('mongodb')
 const uri = require('./uri.js')
 const client = new MongoClient(uri)
 
@@ -60,7 +61,8 @@ async function run()
     app.set('view engine', 'ejs')
     app.set('views', __dirname + '/views')
     app.use(expressLayouts)
-    app.use(express.urlencoded({extended: false}))
+
+    app.use(bodyParser.urlencoded({extended: false}))
 
 
     // Passport middleware
@@ -85,14 +87,17 @@ async function run()
         res.render('register')
     })
 
-    app.get('/', checkAuthenticated, (req, res)=>
+    app.get('/', checkAuthenticated, async (req, res)=>
     {
-        res.render('index', {name: req.user.name})
+        console.log(req.session.passport);
+        let user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
+        res.render('index', {name: user.name})
     })
 
     app.post('/login', passport.authenticate('local', {
         successRedirect: '/',
         failureRedirect: '/login',
+        'sesion': true,
         // Lets us have a flash message to display to our user
         failureFlash: true
     }))

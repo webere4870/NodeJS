@@ -35,9 +35,15 @@ function initialize(passport, getUserByEmail, getUserByID)
 
 
     // Grant access and store user
-    passport.serializeUser((user, done) => done(null, user._id))
+    passport.serializeUser((user, done) => 
+    { 
+        console.log(user._id);
+        return done(null, user._id)})
     // Remove user with given id
-    passport.deserializeUser((id, done) => done(null, getUserByID(id)))
+    passport.deserializeUser((id, done) =>
+    {
+        console.log(id);
+        return done(null, getUserByID(id))})
 }
 
 module.exports = initialize
