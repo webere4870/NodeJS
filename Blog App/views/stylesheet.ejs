@@ -1,0 +1,75 @@
+<style>
+    :root
+    {
+        --main-white: #e7e7e7;
+        --aqua: #0099ff;
+        --main-gray: #1f2833;
+        font-family: 'Poiret One', cursive;
+    }
+    body, html
+    {
+        margin: 0;
+        box-sizing: border-box;
+        padding: 0;
+    }
+    main
+    {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        width: 100vw;
+        background: var(--main-white);
+    }
+    label
+    {
+        text-align: right;
+    }
+    input[type=submit]
+    {
+        padding: 10px;
+        border-radius: 4px;
+        color: white;
+        background: var(--aqua);
+    }
+    button
+    {
+        border: none;
+    }
+    .tableDiv  { display: table;      }
+    form
+    {
+        padding: 20px 40px;
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 0 10px gray;
+    }
+    form p     { display: table-row; font-size: 20px;}
+    #loginForm > div > p > *
+    {
+        margin: 8px 0;
+    }
+    label 
+    { 
+        display: table-cell; 
+        margin: 5px; 
+        padding: 5px;
+    }
+    input
+    { 
+        display: table-cell; 
+        padding: 5px; 
+        width: 200px;
+        border-radius: 4px;
+        border: 1px solid gray;
+    }
+    input[type="submit"]
+    {
+        width: inherit;
+        border: none;
+    }
+    input[type="submit"]:hover
+    {
+        cursor: pointer;
+    }
+</style>

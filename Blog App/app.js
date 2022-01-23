@@ -5,44 +5,250 @@ if(process.env.NODE_ENV !== "production")
     require('dotenv').config()
 }
 
-// Express/EJS packages
+// Express
+const path = require('path')
 const express = require('express')
 const app = express()
-const expressLayouts = require('express-ejs-layouts')
-app.use(express.urlencoded({extended: false}))
-app.set('view engine', 'ejs')
-app.use(expressLayouts)
+app.listen(5000, ()=>
+{
+    console.log("Listening on port 5000");
+})
 
-// MongoDB packages
-const uri = require('./uri.js')
-const {MongoClient} = require('mongodb')
+// EJS
+const expressLayouts = require('express-ejs-layouts');
+
+// Hashing algorithms
 const bcrypt = require('bcrypt')
-const client = new MongoClient(uri)
-let db = null;
 
-// Passport packages
+//Passport
 const passport = require('passport')
+const config = require('./passportconfig.js')
 const flash = require('express-flash')
 const session = require('express-session')
-const configPassport = require('./passportconfig')
+const bodyParser = require('body-parser')
 
-configPassport(
-    passport,
-    async (email) => await db.findOne({email: email}),
-    async (id) => await db.findOne({_id: id})
-)
+// MongoDB
+const {MongoClient, ObjectId} = require('mongodb')
+const uri = require('./uri.js')
+const client = new MongoClient(uri)
 
-app.use(express.json())
-app.use(flash())
-app.use(session({
+
+// Main function
+async function run()
+{
+
+    // Connect to database
+    await client.connect()
+    let db = client.db('Users').collection('Users')
+
+
+    // Configure passport
+    config(
+        passport,
+
+        async (email)=>
+        {
+            return await db.findOne({email: email})
+        },
+
+        async (id)=>
+        {
+            return await db.findOne({_id: id})
+        }
+    )
+
+
+    // Middleware
+    app.set('view engine', 'ejs')
+    app.set('views', path.join(__dirname, 'views'));
+    app.use(expressLayouts)
+
+    app.use(bodyParser.urlencoded({extended: false}))
+
+
+    // Passport middleware
+    app.use(flash())
+    app.use(session({
         secret: process.env.SESSION_SECRET,
         // Resave if nothing changes?
         resave: false,
         // Do you wanna save an empty value?
         saveUninitialized: false
+    }))
+    app.use(passport.initialize())
+    app.use(passport.session())
+
+    app.get('/login', checkNotAuthenticated,(req, res)=>
+    {
+        res.render('login')
+    })
+
+    app.get('/register', checkNotAuthenticated,(req, res)=>
+    {
+        res.render('register')
+    })
+
+    app.get('/', checkAuthenticated, async (req, res)=>
+    {
+        console.log(req.session.passport);
+        let user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
+        res.render('index')
+    })
+
+    app.post('/login', passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/login',
+        'sesion': true,
+        // Lets us have a flash message to display to our user
+        failureFlash: true
+    }))
+
+    app.post('/register', async (req, res)=>
+    {
+        try
+        {
+            const hashedPassword = await bcrypt.hash(req.body.password, 10);
+            const {name, email} = req.body
+            const newUser = {name: name, email: email, password: hashedPassword}
+            await db.insertOne(newUser)
+            res.redirect('login')
+        }
+        catch(e)
+        {
+            res.redirect('register')
+        }
+    })
+
+    app.post('/logout', (req, res)=>
+    {
+        req.logout()
+        req.logout()
+        req.session.destroy()
+        res.redirect('/login')
+    })
+
+    function checkAuthenticated(req, res, next)
+    {
+        if(req.isAuthenticated())
+        {
+            next()
+        }
+        else
+        {
+            res.redirect('/login')
+        }
+    }
+
+    function checkNotAuthenticated(req, res, next)
+    {
+        if(req.isAuthenticated())
+        {
+            res.redirect('index')
+        }
+        else
+        {
+            next()
+        }
+    }
+}
+
+run()
+
+
+/*
+
+if(process.env.NODE_ENV !== "production")
+{
+    // Load in environment variables
+    require('dotenv').config()
+}
+
+// Express
+const express = require('express')
+const app = express()
+const bcrypt = require('bcrypt')
+
+//EJS
+const expressLayouts = require('express-ejs-layouts')
+app.set('view engine', 'ejs')
+app.use(expressLayouts)
+app.use(express.urlencoded({extended: false}))
+
+
+//Passport
+const passport = require('passport')
+const flash = require('express-flash')
+const session = require('express-session')
+const initializePassport = require('./passport-config.js')
+
+initializePassport(
+    passport,
+    email => users.find(user => user.email === email),
+    id => users.find(user => user.id === id)
+  )
+// I.E. How do we use passport?
+app.use(flash())
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    // Resave if nothing changes?
+    resave: false,
+    // Do you wanna save an empty value?
+    saveUninitialized: false
 }))
 app.use(passport.initialize())
 app.use(passport.session())
+
+let users = []
+
+app.get('/', checkAuthenticated,(req, res)=>
+{
+    res.render('index', {title: 'Index', name: req.user.name})
+})
+
+app.get('/login', checkNotAuthenticated ,(req, res)=>
+{
+    res.render('login', {title: 'Login'})
+})
+
+app.get('/register', (req, res)=>
+{
+    res.render('register', {title: 'Register'})
+})
+
+app.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    // Lets us have a flash message to display to our user
+    failureFlash: true
+}))
+
+app.post('/register', checkNotAuthenticated, async (req, res)=>
+{
+    try
+    {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        users.push({
+      id: Date.now().toString(),
+      name: req.body.name,
+      email: req.body.email,
+      password: hashedPassword
+        })
+        console.log(users)
+        res.redirect('/login')
+    }
+    catch(e)
+    {
+        res.redirect('/register')
+    }   
+    
+})
+
+app.post("/logout", function(req, res) {
+    req.logout();
+    req.logOut();
+    req.session.destroy();
+    res.redirect("/login");
+});
 
 function checkAuthenticated(req, res, next)
 {
@@ -52,81 +258,22 @@ function checkAuthenticated(req, res, next)
     }
     else
     {
-        return res.redirect('login')
+        res.redirect('/login')
     }
 }
 
 function checkNotAuthenticated(req, res, next)
 {
-    if(req.isAuthenticated)
+    if(req.isAuthenticated())
     {
-        return res.redirect('index')
+        res.redirect('/login')
     }
-    else
-    {
-        return next()
-    }
+
+    next()
 }
 
-async function run()
+app.listen(5000, ()=>
 {
-
-    // Connect to DB
-    await client.connect()
-    db = client.db('Users').collection('Users');
-
-    app.get('/', checkAuthenticated, (req, res)=>
-    {
-        res.render('index')
-    })
-
-    app.get('/login', checkNotAuthenticated,(req, res)=>
-    {
-        res.render('login')
-    })
-
-    app.get('/register', checkNotAuthenticated, (req, res)=>
-    {
-        res.render('register')
-    })
-
-    app.post('/register', async (req, res)=>
-    {
-        try
-        {
-            const {name, email, password} = req.body
-            const hashedPassword = await bcrypt.hash(password, 10)
-            const user = {name: name, email: email, password: hashedPassword}
-            await db.insertOne(user)
-            res.redirect('login')
-        }
-        catch(e)
-        {
-            res.redirect('register')
-        }
-    })
-
-    app.post('/login', passport.authenticate('local', 
-    {
-        successRedirect: '/',
-        failureRedirect: '/login',
-        'sesion': true,
-        // Lets us have a flash message to display to our user
-        failureFlash: true
-    }))
-
-    app.post('/logout', (req, res)=>
-    {
-        req.logOut()
-        req.logout()
-        req.session.destroy()
-        res.redirect('login')
-    })
-
-    app.listen(5000, ()=>
-    {
-        console.log("Listening on port 5000");
-    })
-}
-
-run()
+    console.log("Listening");
+})
+*/
