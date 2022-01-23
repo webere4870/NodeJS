@@ -1,3 +1,10 @@
+// Environment variables
+if(process.env.NODE_ENV !== "production")
+{
+    // Load in environment variables
+    require('dotenv').config()
+}
+
 // Express/EJS packages
 const express = require('express')
 const app = express()
@@ -25,6 +32,7 @@ configPassport(
     async (id) => await db.findOne({_id: id})
 )
 
+app.use(express.json())
 app.use(flash())
 app.use(session({
         secret: process.env.SESSION_SECRET,
@@ -84,10 +92,18 @@ async function run()
 
     app.post('/register', async (req, res)=>
     {
-        const {name, email, password} = req.body
-        const hashedPassword = await bcrypt.hash(password, 10)
-        const user = {name: name, email: email, password: hashedPassword}
-        await db.insertOne(user)
+        try
+        {
+            const {name, email, password} = req.body
+            const hashedPassword = await bcrypt.hash(password, 10)
+            const user = {name: name, email: email, password: hashedPassword}
+            await db.insertOne(user)
+            res.redirect('login')
+        }
+        catch(e)
+        {
+            res.redirect('register')
+        }
     })
 
     app.post('/login', passport.authenticate('local', 
@@ -99,8 +115,18 @@ async function run()
         failureFlash: true
     }))
 
+    app.post('/logout', (req, res)=>
+    {
+        req.logOut()
+        req.logout()
+        req.session.destroy()
+        res.redirect('login')
+    })
+
     app.listen(5000, ()=>
     {
         console.log("Listening on port 5000");
     })
 }
+
+run()
