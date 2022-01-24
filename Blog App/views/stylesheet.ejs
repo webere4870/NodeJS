@@ -12,6 +12,60 @@
         box-sizing: border-box;
         padding: 0;
     }
+    .colFlex
+    {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .rowFlex
+    {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+    }
+    .card
+    {
+        position: relative;
+        height: 300px;
+        width: 225px;
+        color: white;
+        box-shadow: 0 0 10px gray;
+        border-radius: 10px;
+        transition-duration: .25s;
+        transition-property: all;
+        transition-timing-function: ease;
+    }
+    .card h2
+    {
+        margin-bottom: -15px;
+    }
+    .card:hover
+    {
+        cursor: pointer;
+        box-shadow: 0 0 20px gray;
+    }
+    .bottomCard
+    {
+        height: 25%;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: var(--aqua);
+        border-bottom-right-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+    .card img
+    {
+        height: 75%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
     main
     {
         display: flex;

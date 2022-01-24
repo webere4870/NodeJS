@@ -1,4 +1,33 @@
-<h1>Welcome, <%= name %> </h1>
-<form action="/logout" method="POST" style="position: absolute; top: 15px; right: 15px;">
-    <input type="submit" value="Logout">
-</form>
+<div style="position: absolute; top: 15px; right: 15px; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+    <form action="/logout" method="POST">
+        <input type="submit" value="Logout">
+    </form>
+    <a><%= name %> </a>
+</div>
+
+<div class="colFlex" style="width: 100%;">
+    <h1>Articles</h1>
+    <div class="rowFlex" style="width: 100%;">
+        <div class="card">
+            <img src="/images/react.png" alt="">
+            <div class="bottomCard colFlex">
+                <h2>What is React?</h2>
+                <p>Posted: 1/23/2022</p>
+            </div>
+        </div>
+        <div class="card">
+            <img src="/images/angular.png" alt="">
+            <div class="bottomCard colFlex">
+                <h2>Angular Overview</h2>
+                <p>Posted: 1/23/2022</p>
+            </div>
+        </div>
+        <div class="card">
+            <img src="/images/bootstrap.png" alt="">
+            <div class="bottomCard colFlex">
+                <h2>Bootstrap Basics</h2>
+                <p>Posted: 1/23/2022</p>
+            </div>
+        </div>
+    </div>
+</div>

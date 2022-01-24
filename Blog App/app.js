@@ -9,6 +9,7 @@ if(process.env.NODE_ENV !== "production")
 const path = require('path')
 const express = require('express')
 const app = express()
+app.use(express.static('public'))
 app.listen(5000, ()=>
 {
     console.log("Listening on port 5000");
