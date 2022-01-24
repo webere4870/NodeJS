@@ -80,6 +80,7 @@ async function run()
 
     app.get('/login', checkNotAuthenticated,(req, res)=>
     {
+        console.log("here");
         res.render('login')
     })
 
@@ -90,15 +91,16 @@ async function run()
 
     app.get('/', checkAuthenticated, async (req, res)=>
     {
-        console.log(req.session.passport);
-        let user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
-        res.render('index')
+        console.log("here");
+        const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
+        console.log(user);
+        res.render('index', {name: `${user.first} ${user.last}`})
     })
 
     app.post('/login', passport.authenticate('local', {
         successRedirect: '/',
         failureRedirect: '/login',
-        'sesion': true,
+        'session': true,
         // Lets us have a flash message to display to our user
         failureFlash: true
     }))
@@ -108,8 +110,8 @@ async function run()
         try
         {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
-            const {name, email} = req.body
-            const newUser = {name: name, email: email, password: hashedPassword}
+            const {first, last, email} = req.body
+            const newUser = {first: first, last: last, email: email, password: hashedPassword}
             await db.insertOne(newUser)
             res.redirect('login')
         }

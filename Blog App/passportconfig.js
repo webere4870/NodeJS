@@ -9,18 +9,20 @@ function initializePassport(passport, getUserByEmail, getUserByID)
         try
         {
             const user = await getUserByEmail(email)
-            if(email == null)
+            if(user == null)
             {
                 return done(null, false, {message: 'Account not found'})
             }
-
-            if(await bcrypt.compare(user.password, password))
-            {
-                return done(null, user)
-            }
             else
             {
-                return done(null, false, {message: 'Invalid password.'})
+                if(await bcrypt.compare(password, user.password))
+                {
+                    return done(null, user)
+                }
+                else
+                {
+                    return done(null, false, {message: 'Invalid password.'})
+                }
             }
         }
         catch(e)
