@@ -41,7 +41,7 @@ async function run()
     // Connect to database
     await client.connect()
     let db = client.db('Users').collection('Users')
-
+    let db2 = client.db('Users').collection('Articles')
 
     // Configure passport
     config(
@@ -81,7 +81,6 @@ async function run()
 
     app.get('/login', checkNotAuthenticated,(req, res)=>
     {
-        console.log("here");
         res.render('login')
     })
 
@@ -92,10 +91,18 @@ async function run()
 
     app.get('/', checkAuthenticated, async (req, res)=>
     {
-        console.log("here");
         const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
         console.log(user);
         res.render('index', {name: `${user.first} ${user.last}`})
+    })
+
+    app.get('/article/:page', checkAuthenticated, async (req, res)=>
+    {
+        const page = req.params.page;
+        console.log(page);
+        const {title, author, likes, comments, article} = await db2.findOne({title: page})
+        console.log(author);
+        res.render('article', {author: author, title: title, likes: likes, comments: comments, article: article});
     })
 
     app.post('/login', passport.authenticate('local', {
