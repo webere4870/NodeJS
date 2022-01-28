@@ -6,11 +6,15 @@
         --main-gray: #1f2833;
         font-family: 'Poiret One', cursive;
     }
-    body, html
+    *
     {
         margin: 0;
-        box-sizing: border-box;
-        padding: 0;
+        padding: 0;box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    h1
+    {
+        color: var(--aqua);
     }
     .colFlex
     {
@@ -25,6 +29,14 @@
         align-items: center;
         justify-content: space-evenly;
         flex-wrap: wrap;
+    }
+    .relative
+    {
+        position: relative;
+    }
+    .absolute
+    {
+        position: absolute;
     }
     .card
     {
@@ -154,5 +166,30 @@
     {
         font-size: 20px;
         z-index: 10;
+    }
+    #article
+    {
+        width: 60%;
+    }
+    h1, p
+    {
+        margin: 10px;
+    }
+    .iconCircle
+    {
+        height: 60px;
+        width: 60px;
+        border-radius: 50%;
+        background: var(--aqua);
+        box-shadow: 0 0 15px gray;
+        margin: 0 10px;
+    }
+    .iconCircle:hover{
+        cursor: pointer;
+    }
+    i
+    {
+        color: white;
+        font-size: 30px;
     }
 </style>

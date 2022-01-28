@@ -1,3 +1,16 @@
 <h1><%= title %> </h1>
-<p><%= author %> </p>
-<p><%= article %> </p>
+<p>Author: <%= author %> </p>
+<div id="article">
+    <p><%= article %> </p>
+</div>
+
+<%- include('./logout') %> 
+
+<div class="rowFlex absolute" style="top: 0; left: 0; height: 100px;">
+    <div class="iconCircle colFlex">
+        <i class="fas fa-thumbs-up"></i>
+    </div>
+    <div class="iconCircle colFlex">
+        <i class="fas fa-comment-dots"></i>
+    </div>
+</div>
