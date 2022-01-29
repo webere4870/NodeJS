@@ -2,30 +2,41 @@
 
     const $ = (query) => document.querySelector(query)
 
-    const getLikes = async () =>
+    const getLikes = async (title) =>
     {
-
-    }
-
-    const getArticle = async (title) =>
-    {
-        console.log(title);
-        let article = await fetch('/article');
-        console.log(article);
-    }
-
-    const upLikes = async (title) =>
-    {
-        console.log(title);
+        console.log("here");
         let response = await fetch('/likes/' + title, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({title: title})
         })
+        console.log(response);
         let {likes} = await response.json();
         let likeCount = $('#likeCount')
         let newText = document.createTextNode(likes);
         likeCount.appendChild(newText);
+    }
+
+    const getArticle = async (title) =>
+    {
+        let article = await fetch('/article');
+    }
+
+    const upLikes = async (title) =>
+    {
+        let iconDivs = document.querySelectorAll('.iconDiv');
+        if(iconDivs[0].classList.contains("liked"))
+        {
+            let response = await fetch('/likes/' + title, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({title: title})
+            })
+            let {likes} = await response.json();
+            let likeCount = $('#likeCount')
+            let newText = document.createTextNode(likes);
+            likeCount.appendChild(newText);
+        }
     }
 
     const downLikes = async (title) =>

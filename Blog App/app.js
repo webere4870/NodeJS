@@ -102,7 +102,7 @@ async function run()
         console.log(page);
         const {title, author, likes, comments, article} = await db2.findOne({title: page})
         console.log(author);
-        res.render('article', {author: author, title: title, likes: likes, comments: comments, article: article});
+        res.render('article',{title: title, author: author, likes: likes, comments: comments, article: article});
     })
 
     app.post('/login', passport.authenticate('local', {
@@ -139,6 +139,7 @@ async function run()
 
     app.post('/likes/:article', async (req, res) =>
     {
+        console.log("worked");
         const article =  req.params.article;
         let {likes} = await db2.findOne({title: article})
         likes++;
