@@ -7,10 +7,15 @@
 <%- include('./logout') %> 
 
 <div class="rowFlex absolute" style="top: 0; left: 0; height: 100px;">
-    <div class="iconCircle colFlex">
-        <i class="fas fa-thumbs-up"></i>
-    </div>
-    <div class="iconCircle colFlex">
-        <i class="fas fa-comment-dots"></i>
-    </div>
+
+        <div class="iconCircle colFlex relative" onclick="upLikes('<%=title%>')">
+            <i class="fas fa-thumbs-up"></i>
+            <p class="rowFlex" id="likeCount"></p>
+        </div>
+
+    <form action="">
+        <div class="iconCircle colFlex">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+    </form>
 </div>

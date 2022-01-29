@@ -137,6 +137,24 @@ async function run()
         res.redirect('/login')
     })
 
+    app.post('/likes/:article', async (req, res) =>
+    {
+        const article =  req.params.article;
+        let {likes} = await db2.findOne({title: article})
+        likes++;
+        await db2.updateOne({
+            title: article
+        },
+        {
+            $set:
+            {
+                likes: likes
+            }
+        })
+        const obj = await db2.findOne({title: article})
+        res.json({success: true, likes: obj.likes});
+    })
+
     function checkAuthenticated(req, res, next)
     {
         if(req.isAuthenticated())
