@@ -5,17 +5,18 @@
 </div>
 
 <%- include('./logout') %> 
+<%- include('./comment') %>
 
 <div class="rowFlex absolute" style="top: 0; left: 0; height: 100px;">
 
-        <div class="iconCircle colFlex relative liked" onclick="upLikes('<%=title%>')">
-            <i class="fas fa-thumbs-up liked"></i>
+        <div class="iconCircle colFlex relative unliked" onclick="upLikes('<%=title%>')">
+            <i class="fas fa-thumbs-up"></i>
             <% %>
             <p class="rowFlex" id="likeCount"><%= likes %> </p>
         </div>
 
     <form action="">
-        <div class="iconCircle colFlex">
+        <div class="iconCircle colFlex" id="commentCircle" onclick="loadComments()">
             <i class="fas fa-comment-dots"></i>
         </div>
     </form>

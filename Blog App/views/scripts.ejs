@@ -24,9 +24,12 @@
 
     const upLikes = async (title) =>
     {
-        let iconDivs = document.querySelectorAll('.iconDiv');
-        if(iconDivs[0].classList.contains("liked"))
+        let iconDivs = document.querySelectorAll('.iconCircle');
+        if(iconDivs[0].classList.contains("unliked"))
         {
+            iconDivs[0].classList.toggle("unliked")
+            iconDivs[0].classList.toggle("liked")
+            iconDivs[0].querySelector('i').classList.toggle("likedI")
             let response = await fetch('/likes/' + title, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -35,13 +38,32 @@
             let {likes} = await response.json();
             let likeCount = $('#likeCount')
             let newText = document.createTextNode(likes);
+            likeCount.textContent = "";
+            likeCount.appendChild(newText);
+        }
+        else
+        {
+            iconDivs[0].classList.toggle("unliked")
+            iconDivs[0].classList.toggle("liked")
+            iconDivs[0].querySelector('i').classList.toggle("likedI")
+            let response = await fetch('/downLikes/' + title, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({title: title})
+            })
+            let {likes} = await response.json();
+            console.log(likes);
+            let likeCount = $('#likeCount')
+            let newText = document.createTextNode(likes);
+            likeCount.textContent = "";
             likeCount.appendChild(newText);
         }
     }
 
-    const downLikes = async (title) =>
+    const loadComments = () =>
     {
-
+        let insertBox = document.createElement('div')
+        insertBox.className = ""
     }
 
 </script>

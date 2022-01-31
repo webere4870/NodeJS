@@ -139,7 +139,6 @@ async function run()
 
     app.post('/likes/:article', async (req, res) =>
     {
-        console.log("worked");
         const article =  req.params.article;
         let {likes} = await db2.findOne({title: article})
         likes++;
@@ -155,6 +154,17 @@ async function run()
         const obj = await db2.findOne({title: article})
         res.json({success: true, likes: obj.likes});
     })
+
+    app.post('/downLikes/:title', async (req, res)=>
+    {
+        const {title} = req.params;
+        let {likes} = await db2.findOne({title: title})
+        likes--;
+        await db2.updateOne({title: title}, {$set: {likes: likes}})
+        const obj = await db2.findOne({title: title})
+        res.json({success: true, likes: obj.likes})
+    })
+
 
     function checkAuthenticated(req, res, next)
     {

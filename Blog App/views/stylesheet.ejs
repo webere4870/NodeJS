@@ -196,15 +196,64 @@
         font-size: 18px;
         font-weight: bold;
     }
+    .unliked
+    {
+        background: var(--aqua);
+    }
     .liked
     {
         background: white;
-        color: var(--aqua);
+        
     }
 
+    .likedI
+    {
+        color: var(--aqua);
+    }
     i
     {
         color: white;
         font-size: 30px;
+    }
+
+    #commentBox
+    {
+        width: 50vw;
+        height: 100vh;
+        background: var(--main-gray);
+        top: 0;
+        left: -25vw;
+        position: absolute;
+    }
+
+    .innerComment
+    {
+        height: 100%;
+        width: 100%;
+        position: relative;
+    }
+
+    .innerComment > div
+    {
+        position: absolute;
+        width: 25vw;
+        height: 100vw;
+        transition-property: all;
+        transition-duration: .5s;
+        transition-timing-function: ease;
+    }
+
+    .innerComment > div:nth-of-type(1)
+    {
+        top: 0;
+        left: 0;
+    }
+
+    .innerComment > div:nth-of-type(2)
+    {
+        top: 0;
+        left: 25vw;
+        background: pink;
+        z-index: 2;
     }
 </style>
