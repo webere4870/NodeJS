@@ -216,44 +216,21 @@
         font-size: 30px;
     }
 
-    #commentBox
+    .colorMe
     {
-        width: 50vw;
-        height: 100vh;
         background: var(--main-gray);
-        top: 0;
-        left: -25vw;
         position: absolute;
-    }
-
-    .innerComment
-    {
-        height: 100%;
-        width: 100%;
-        position: relative;
-    }
-
-    .innerComment > div
-    {
-        position: absolute;
-        width: 25vw;
-        height: 100vw;
-        transition-property: all;
-        transition-duration: .5s;
-        transition-timing-function: ease;
-    }
-
-    .innerComment > div:nth-of-type(1)
-    {
         top: 0;
         left: 0;
+        width: 25vw;
+        height: 100vh;
+        transition-property: all;
+        transition-timing-function: ease;
+        transition-duration: .5s;
     }
 
-    .innerComment > div:nth-of-type(2)
+    .open
     {
-        top: 0;
-        left: 25vw;
-        background: pink;
-        z-index: 2;
+        left: -25vw;
     }
 </style>
