@@ -221,16 +221,53 @@
         background: var(--main-gray);
         position: absolute;
         top: 0;
-        left: 0;
+        left: -25vw;
         width: 25vw;
         height: 100vh;
         transition-property: all;
         transition-timing-function: ease;
         transition-duration: .5s;
+        z-index: 1;
+    }
+
+    .relativeWrapper
+    {
+        height: 100%;
+        width: 100%;
+        position: relative;
+    }
+
+    .closeBtn
+    {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    
+
+    .closeBtn:hover{
+        cursor: pointer;
     }
 
     .open
     {
-        left: -25vw;
+        left: 0vw;
+    }
+
+    #cardComments
+    {
+        height: 70%;
+        width: 90%;
+        border-radius: 5px;
+        background: #0e1218;
+    }
+
+    .userComment
+    {
+        width: 90%;
+        background: var(--main-white);
+        border-radius: 3px;
+        padding: 5px;
     }
 </style>

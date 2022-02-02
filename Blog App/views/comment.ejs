@@ -1,4 +1,19 @@
 <div class="colorMe">
-
+    <div class="relativeWrapper colFlex">
+        <div class="closeBtn" onclick="loadComments()">
+            <i class="far fa-times-circle"></i>
+        </div>
+        <div id="cardComments" class="colFlex">
+            <% console.log(comments) %> 
+            <% if(comments) {%> 
+            <% for(let counter = 0; counter < comments.length; counter++){ %>
+                <div class="userComment">
+                    <h3><%= comments[counter].name %> </h3>
+                    <p style="padding: 0; margin: 0;"><%= comments[counter].comment %> </p>
+                </div>
+            <% } %> 
+            <% } %>  
+        </div>
+    </div>
 </div>
 
