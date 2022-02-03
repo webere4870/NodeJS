@@ -241,13 +241,21 @@
     {
         position: absolute;
         top: 15px;
-        right: 15px;
+        right: -42px;
     }
 
     
 
     .closeBtn:hover{
         cursor: pointer;
+    }
+
+    .closeBtn i{
+        color: var(--aqua);
+    }
+
+    .hide{
+        display: none;
     }
 
     .open
@@ -257,10 +265,15 @@
 
     #cardComments
     {
-        height: 70%;
+        height: 80%;
         width: 90%;
         border-radius: 5px;
         background: #0e1218;
+        margin: 15px 0 -5px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
     }
 
     .userComment
@@ -269,5 +282,31 @@
         background: var(--main-white);
         border-radius: 3px;
         padding: 5px;
+        margin: 11px 0;
     }
+
+    #newComment
+    {
+        background: var(--main-white);
+        border-radius: 4px;
+        height: 50%;
+        color: var(--aqua);
+        padding: 5px;
+        width: 138%;
+        font-family: 'Poiret One', cursive;
+    }
+
+
+
+
+    #myBlue
+    {
+        color: var(--aqua);
+    }
+
+    .userComment h3
+    {
+        text-align: right;
+    }
+
 </style>

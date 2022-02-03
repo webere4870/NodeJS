@@ -1,19 +1,24 @@
 <div class="colorMe">
-    <div class="relativeWrapper colFlex">
-        <div class="closeBtn" onclick="loadComments()">
+    <div class="relativeWrapper colFlex" style="justify-content: center;">
+        <div class="closeBtn hide" onclick="loadComments()">
             <i class="far fa-times-circle"></i>
         </div>
-        <div id="cardComments" class="colFlex">
+        <div id="cardComments">
             <% console.log(comments) %> 
             <% if(comments) {%> 
             <% for(let counter = 0; counter < comments.length; counter++){ %>
                 <div class="userComment">
-                    <h3><%= comments[counter].name %> </h3>
+                    <h3><%= comments[counter].name %> <i class="far fa-user-circle" id="myBlue" style="font-size: 20px;"></i></h3>
                     <p style="padding: 0; margin: 0;"><%= comments[counter].comment %> </p>
                 </div>
             <% } %> 
-            <% } %>  
+            <% } %> 
         </div>
+        <form action="/newComment" method="POST" class="form colFlex">
+            <textarea name="comment" id="newComment" cols="30" rows="10" placeholder="Write a message..."></textarea>
+            <input type="text" name="title" value="<%= title %>" style="display: none;">
+            <input type="submit" style="align-self: flex-end; margin-top: 7px;" id="postComment">
+        </form> 
     </div>
 </div>
 

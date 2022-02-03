@@ -63,7 +63,14 @@
     const loadComments = () =>
     {
         let myDiv = document.querySelectorAll('.colorMe')
+        let xBtn = document.querySelectorAll('.closeBtn')
+        xBtn[0].classList.toggle("hide")
         myDiv[0].classList.toggle("open");
     }
+
+    document.querySelector('#postComment').addEventListener("click", (evt)=>
+    {
+        
+    })
 
 </script>
