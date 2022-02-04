@@ -68,9 +68,30 @@
         myDiv[0].classList.toggle("open");
     }
 
-    document.querySelector('#postComment').addEventListener("click", (evt)=>
+    document.querySelector("#postComment").addEventListener("click",
+    async ()=>
     {
-        
+        console.log("here")
+        let response = await fetch('/newCommenter/' + title, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({title: title})
+            })
+        console.log("her3");
+        const newby = await response.json();
+        console.log(newby);
     })
 
 </script>
+
+<!-- let newComment = document.querySelector('#newComment')
+        let hiddenBox = document.querySelector('#hiddenBox')
+        let object = {comment: newComment, title: hiddenBox.value}
+        const response = await fetch('/newComment',
+        {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(object)
+        })
+        const jsonn = await response.json();
+        console.log(jsonn); -->

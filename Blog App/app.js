@@ -165,14 +165,15 @@ async function run()
         res.json({success: true, likes: obj.likes})
     })
 
-    app.post('/newComment', async (req, res)=>
+    app.post('/newComment/', async (req, res)=>
     {
-        const {comment, title} = req.body
+        let {comment, title} = req.body
         const {first, last} = await db.findOne({'_id': ObjectId(req.session.passport.user)});
         const postComment = {name: `${first} ${last}`, comment: comment};
-        const response = await db2.findOneAndUpdate({title: title}, {$push: {comments: postComment}});
-        const {comments} = await db2.findOne({title: title})
-        res.json({success: true, data: {comments: comments}})
+         const response = await db2.findOneAndUpdate({title: title}, {$push: {comments: postComment}});
+         const {author, likes, comments, article} = await db2.findOne({title: title})
+        console.log("Comments", comments);
+        res.render('article',{title: title, author: author, likes: likes, comments: comments, article: article});
     })
 
     function checkAuthenticated(req, res, next)
