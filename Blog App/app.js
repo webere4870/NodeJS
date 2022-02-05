@@ -92,8 +92,8 @@ async function run()
     app.get('/', checkAuthenticated, async (req, res)=>
     {
         const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
-        console.log(user);
-        res.render('index', {name: `${user.first} ${user.last}`})
+        const articles = await db2.find().toArray();
+        res.render('index', {name: `${user.first} ${user.last}`, articles: articles})
     })
 
     app.get('/article/:page', checkAuthenticated, async (req, res)=>

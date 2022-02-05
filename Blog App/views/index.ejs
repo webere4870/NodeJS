@@ -8,7 +8,7 @@
 <div class="colFlex" style="width: 100%;">
     <h1>Articles</h1>
     <div class="rowFlex" style="width: 100%;">
-        <a href="/article/What is React">
+        <!-- <a href="/article/What is React">
             <div class="card">
                 <img src="/images/react.png" alt="">
                 <div class="bottomCard colFlex">
@@ -16,20 +16,36 @@
                     <p>Posted: 1/23/2022</p>
                 </div>
             </div>
-        </a>
-        <div class="card">
-            <img src="/images/angular.png" alt="">
-            <div class="bottomCard colFlex">
-                <h2>Angular Overview</h2>
-                <p>Posted: 1/23/2022</p>
-            </div>
-        </div>
-        <div class="card">
-            <img src="/images/bootstrap.png" alt="">
-            <div class="bottomCard colFlex">
-                <h2>Bootstrap Basics</h2>
-                <p>Posted: 1/23/2022</p>
-            </div>
-        </div>
+        </a> -->
+        <% if(articles) {  %>
+            <% for(let counter = 0; counter < articles.length; counter++) {%>
+                <a href="/article/<%=articles[counter].title %>">
+                    <div class="card">
+                        <div class="leftCard colFlex">
+                            <div class="innerCard colFlex">
+                                <i class="far fa-user-circle" style="color: white; font-size: 60px;"></i>
+                                <h3 style="margin-top: 8px;"><%=articles[counter].author %> </h3>
+                                <p>Posted </p>
+                            </div>
+                        </div>
+                        <div class="rightCard colFlex">
+                            <h2 class="aquaText" style="text-align: center;"><%=articles[counter].title %> </h2>
+                            <div class="rowFlex">
+                                <div class="keywords colFlex">
+                                    <p style="margin: 0; padding: 0;">NodeJS</p>
+                                </div>
+                                <div class="keywords">
+                                    <p style="margin: 0; padding: 0;">JavaScript</p>
+                                </div>
+                                <div class="keywords">
+                                    <p style="margin: 0; padding: 0;">React</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            <% } %> 
+        <% } %>  
+
     </div>
 </div>

@@ -44,8 +44,8 @@
     .card
     {
         position: relative;
-        height: 300px;
-        width: 225px;
+        height: 170px;
+        width: 500px;
         color: white;
         box-shadow: 0 0 10px gray;
         border-radius: 10px;
@@ -53,15 +53,46 @@
         transition-property: all;
         transition-timing-function: ease;
     }
-    .card h2
+    .leftCard
+    {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 170px;
+        width: 170px;
+        background: var(--aqua);
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+    .rightCard
+    {
+        position:absolute;
+        width: calc(100% - 170px);
+        height: 100%;
+        top: 0;
+        right: 0;
+    }
+
+    .innerCard
+    {
+        height: 100%;
+        width: 100%;
+    }
+
+    .keywords
+    {
+        background: var(--main-gray);
+        padding: 5px 10px;
+        color: white;
+        border-radius: 5px;
+        margin: 10px;
+    }
+
+    /* .card h2
     {
         margin-bottom: -15px;
     }
-    .card:hover
-    {
-        cursor: pointer;
-        box-shadow: 0 0 20px gray;
-    }
+
     .bottomCard
     {
         height: 25%;
@@ -80,6 +111,23 @@
         position: absolute;
         top: 0;
         left: 0;
+    } */
+    .card:hover
+    {
+        cursor: pointer;
+        box-shadow: 0 0 20px gray;
+    }
+    .grayText
+    {
+        color: var(--main-gray);
+    }
+    .aquaText
+    {
+        color: var(--aqua);
+    }
+    .leftCard
+    {
+        width: 30%;
     }
     main
     {
