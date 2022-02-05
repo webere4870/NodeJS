@@ -4,10 +4,9 @@
             <i class="far fa-times-circle"></i>
         </div>
         <div id="cardComments">
-            <% console.log(comments) %> 
             <% if(comments) {%> 
-            <% for(let counter = 0; counter < comments.length; counter++){ %>
-                <div class="userComment">
+            <% for(let counter = 0; counter < comments.length; counter++){ %> 
+                <div class="userComment <% if(userID == comments[counter]._id) {%>blueComment<% } %>" >
                     <h3><%= comments[counter].name %> <i class="far fa-user-circle" id="myBlue" style="font-size: 20px;"></i></h3>
                     <p style="padding: 0; margin: 0;"><%= comments[counter].comment %> </p>
                 </div>

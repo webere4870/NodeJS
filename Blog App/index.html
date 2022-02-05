@@ -11,20 +11,43 @@
     crossorigin="anonymous"></script>
     <style>
         .test{
-            height: 330px;
+            height: 220px;
             width: 220px;
             background: pink;
+        }
+        #red
+        {
+            background: blue;
+            transform: rotate(180deg);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        button{
+            z-index: 5;
+            position: absolute;
+            bottom: 0;
+        }
+        button:nth-of-type(1)
+        {
+            left: 200px;
         }
     </style>
 </head>
 <body>
-    <input type="text">
-    <span>*</span>
-    <button>Submit</button>
+    <div class="test" id="red">
+
+    </div>
+    <button id="one">Hide</button>
+    <button id="two">Show</button>
     <script>
-        $('button').click(()=>
+        $('#one').click(()=>
         {
-            $('[type=text]').remove()
+            $('#red').finish().animate({top: "90vh"}, 5000)
+        })
+        $('#two').click(()=>
+        {
+            $('#red').animate({left: "100vw"}, 10000)
         })
     </script>
 </body>

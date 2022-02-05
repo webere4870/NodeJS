@@ -102,7 +102,7 @@ async function run()
         console.log(page);
         const {title, author, likes, comments, article} = await db2.findOne({title: page})
         console.log(author);
-        res.render('article',{title: title, author: author, likes: likes, comments: comments, article: article});
+        res.render('article',{title: title, author: author, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString()});
     })
 
     app.post('/login', passport.authenticate('local', {
@@ -169,11 +169,11 @@ async function run()
     {
         let {comment, title} = req.body
         const {first, last} = await db.findOne({'_id': ObjectId(req.session.passport.user)});
-        const postComment = {name: `${first} ${last}`, comment: comment};
+        const postComment = { _id: ObjectId(req.session.passport.user), name: `${first} ${last}`, comment: comment};
          const response = await db2.findOneAndUpdate({title: title}, {$push: {comments: postComment}});
          const {author, likes, comments, article} = await db2.findOne({title: title})
-        console.log("Comments", comments);
-        res.render('article',{title: title, author: author, likes: likes, comments: comments, article: article});
+        console.log(ObjectId(req.session.passport.user))
+        res.render('article',{title: title, author: author, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString()});
     })
 
     function checkAuthenticated(req, res, next)

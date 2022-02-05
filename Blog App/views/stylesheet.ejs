@@ -292,16 +292,17 @@
 
     .userComment
     {
-        width: 90%;
+        align-self: flex-start;
+        width: 80%;
         background: var(--main-white);
         border-radius: 3px;
         padding: 5px;
-        margin: 4px 0;
+        margin: 8px 12px;
     }
 
     .userComment:nth-of-type(1)
     {
-        margin: 11px 0;
+        margin-top: 11px;
     }
 
     #newComment
@@ -315,12 +316,22 @@
         font-family: 'Poiret One', cursive;
     }
 
-
-
-
     #myBlue
     {
         color: var(--aqua);
+    }
+
+    .blueComment{
+        background: var(--aqua);
+        align-self: flex-end;
+    }
+    .blueComment #myBlue
+    {
+       color: white;
+    }
+
+    .blueComment h3, .blueComment p{
+        color: white;
     }
 
     .userComment h3
