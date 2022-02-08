@@ -96,6 +96,15 @@ async function run()
         res.render('index', {name: `${user.first} ${user.last}`, articles: articles})
     })
 
+    app.get('/write', checkAuthenticated,(req, res)=>
+    {
+        res.render('write')
+    })
+    app.get('/settings', checkAuthenticated,(req, res)=>
+    {
+        res.render('settings')
+    })
+
     app.get('/article/:page', checkAuthenticated, async (req, res)=>
     {
         const page = req.params.page;

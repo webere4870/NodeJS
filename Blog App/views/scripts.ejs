@@ -1,4 +1,12 @@
 <script>
+    let newPost = () =>
+    {
+        let title = $('#blogTitle').value
+        let caption = $('#blogCaption').value
+        let keywords = $('#blogKeywords').value
+        let article = document.getElementById('blogArticle')
+        console.log(article.value)
+    }
 
     const $ = (query) => document.querySelector(query)
 

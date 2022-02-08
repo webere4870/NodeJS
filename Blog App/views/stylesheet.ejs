@@ -387,4 +387,141 @@
         text-align: right;
     }
 
+    nav
+    {
+        position: absolute;
+        left: 0;
+        height: 100vh;
+        width: 65px;
+        background: var(--main-gray);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .navBox
+    {
+        height: 65px;
+        width: 65px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .navBox:hover{
+        background: #0e1218;
+    }
+
+    a{
+        text-decoration: none;
+    }
+
+    .navActive
+    {
+        border-left: 4px solid var(--aqua);
+    }
+
+    .navBox i{
+        font-size: 20px;
+    }
+
+    #searchBox
+    {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        width: 100vw;
+    }
+
+    #searchBox input
+    {
+        position: relative;
+        width: 500px;
+        height: 35px;
+        border-radius: 20px;
+        background: var(--main-white);
+        border: none;
+        box-shadow: 0 0 10px gray;
+    }
+
+    #searhBox input:hover{
+        cursor: pointer;
+        box-shadow: 0 0 15px gray;
+    }
+
+    .inputWrap input, .inputWrap textarea
+    {
+        width: 500px;
+        background: var(--main-white);
+        border-radius: 5px;
+        box-shadow: 0 0 8px gray;
+    }
+    .inputWrap{
+        margin: 8px 0;
+        position: relative;
+    }
+    #i1::before{
+        position: absolute;
+        right:103%;
+        top: 3px;
+        font-size: 20px;
+        content: 'Title: ';
+    }
+    #i2::before{
+        position: absolute;
+        right:103%;
+        top: 3px;
+        font-size: 20px;
+        content: 'Caption: ';
+    }
+    #i3::before{
+        position: absolute;
+        right:103%;
+        top: 3px;
+        font-size: 20px;
+        content: 'Keywords: ';
+    }
+    #i4::before{
+        position: absolute;
+        right:103%;
+        top: 3px;
+        font-size: 20px;
+        content: 'Article: ';
+    }
+    .inputWrap textarea
+    {
+        height: 200px;
+    }
+    textarea{
+        color: var(--aqua);
+        font-family: 'Poiret One', cursive;
+        padding: 5px;
+        font-size: 20px;
+    }
+    .inputWrap input{
+        font-size: 20px;
+        height: 30px;
+    }
+    #submitBtn
+    {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: var(--aqua);
+        border-radius: 5px;
+        height: 40px;
+        width: 80px;
+        color: white;
+        box-shadow: 0 0 10px gray;
+        transition-duration: .25s;
+        transition-timing-function: ease;
+        transition-property: all;
+    }
+    
+    #submitBtn:hover
+    {
+        cursor: pointer;
+        box-shadow: 0 0 20px gray;
+    }
 </style>

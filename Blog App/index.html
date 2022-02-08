@@ -5,49 +5,81 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script
-    src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-    crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <style>
-        .test{
-            height: 220px;
-            width: 220px;
-            background: pink;
-        }
-        #red
+        button
         {
-            background: blue;
-            transform: rotate(180deg);
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        button{
-            z-index: 5;
+            z-index: 10;
             position: absolute;
             bottom: 0;
         }
         button:nth-of-type(1)
         {
-            left: 200px;
+            left: 0;
+        }
+        button:nth-of-type(2)
+        {
+            right: 0;
+        }
+        *
+        {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        div{
+            background: red;
+            height: 200px;
+            width: 200px;
+            border: 2px solid black;
+        }
+        #one{
+            background: red;
+            left: -200vw;
+        }
+        #two{
+            background: blue;
+            left: -100vw;
+        }
+        #three{
+            background: green;
+            left: 0;
+        }
+        #four{
+            background: yellow;
+            left: 100vw;
+        }
+        #five{
+            background: orange;
+            left: 200vw;
+        }
+        .slider{
+            position: absolute;
+            height: 100vh;
+            width: 100vw;
         }
     </style>
 </head>
 <body>
-    <div class="test" id="red">
-
-    </div>
-    <button id="one">Hide</button>
-    <button id="two">Show</button>
+    <div class="slider" id="one"></div>
+    <div class="slider" id="two"></div>
+    <div class="slider" id="three"></div>
+    <div class="slider" id="four"></div>
+    <div class="slider" id="five"></div>
+    <button id="left">Left</button>
+    <button id="right">Right</button>
     <script>
-        $('#one').click(()=>
+        let sliders = $('.slider')
+        $('#left').click(()=>
         {
-            $('#red').finish().animate({top: "90vh"}, 5000)
+            sliders.each((index, elem)=>
+            {
+                $(elem).animate({left: "+=100vw"})
+            })
         })
-        $('#two').click(()=>
+        $('#right').click(()=>
         {
-            $('#red').animate({left: "100vw"}, 10000)
+            
         })
     </script>
 </body>
