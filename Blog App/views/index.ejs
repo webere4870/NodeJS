@@ -1,8 +1,8 @@
 <%- include('./navigation') %> 
 
-<div id="searchBox" class="rowFlex">
+<!-- <div id="searchBox" class="rowFlex">
     <input type="text">
-</div>
+</div> -->
 
 <div style="position: absolute; top: 15px; right: 15px; display: flex; justify-content: center; align-items: center; flex-direction: column;">
     <form action="/logout" method="POST">
@@ -13,7 +13,7 @@
 
 <div class="colFlex" style="width: 100%;">
     <h1>Articles</h1>
-    <div class="rowFlex" style="width: 100%;">
+    <div class="rowFlex" id="articleHolder" style="width: 100%;">
         <!-- <a href="/article/What is React">
             <div class="card">
                 <img src="/images/react.png" alt="">

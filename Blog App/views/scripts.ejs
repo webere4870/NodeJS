@@ -1,11 +1,22 @@
 <script>
-    let newPost = () =>
+    let newPost = async () =>
     {
-        let title = $('#blogTitle').value
-        let caption = $('#blogCaption').value
-        let keywords = $('#blogKeywords').value
-        let article = document.getElementById('blogArticle')
-        console.log(article.value)
+        let title = $('#blogTitle')
+        let caption = $('#blogCaption')
+        let keywords = $('#blogKeywords')
+        const keywordsArr = keywords.split(" ")
+        const article = document.querySelector('#blogArticle')
+        let response = await fetch('/write/newBlog', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({title: title.value, caption: caption.value, keywords: keywordsArr, article: article.value})
+        })
+        let json = await response.json()
+        console.log(json);
+        title.value =""
+        keywords.value = ""
+        article.value =""
+        caption.value =""
     }
 
     const $ = (query) => document.querySelector(query)

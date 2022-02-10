@@ -63,8 +63,8 @@ async function run()
     app.set('view engine', 'ejs')
     app.set('views', path.join(__dirname, 'views'));
     app.use(expressLayouts)
-
-    app.use(bodyParser.urlencoded({extended: false}))
+    app.use(express.json())
+    app.use(express.urlencoded({extended: false}))
 
 
     // Passport middleware
@@ -100,6 +100,17 @@ async function run()
     {
         res.render('write')
     })
+
+    app.post('/write/newBlog', async (req, res)=>
+    {
+        const {title, keywords, caption, article} = req.body;
+        console.log(req.body)
+        const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())});
+        console.log(caption, keywords, article);
+        const response = await db2.insertOne({title: title, author: `${user.first} ${user.last}`, caption: caption, article: article, keywords: keywords, likes: 0, comments: []});
+        res.json({success: true, data: {message: "Thanks for sharing!"}});
+    })
+
     app.get('/settings', checkAuthenticated,(req, res)=>
     {
         res.render('settings')
