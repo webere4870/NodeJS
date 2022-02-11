@@ -103,11 +103,12 @@ async function run()
 
     app.post('/write/newBlog', async (req, res)=>
     {
-        const {title, keywords, caption, article} = req.body;
+        const {title, keywords, caption, article, date} = req.body;
         console.log(req.body)
         const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())});
         console.log(caption, keywords, article);
-        const response = await db2.insertOne({title: title, author: `${user.first} ${user.last}`, caption: caption, article: article, keywords: keywords, likes: 0, comments: []});
+        let newDate = new Date(Date.parse(date)).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})
+        const response = await db2.insertOne({title: title, author: `${user.first} ${user.last}`, caption: caption, article: article, keywords: keywords, likes: 0, comments: [], date: newDate});
         res.json({success: true, data: {message: "Thanks for sharing!"}});
     })
 

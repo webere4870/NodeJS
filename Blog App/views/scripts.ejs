@@ -4,12 +4,13 @@
         let title = $('#blogTitle')
         let caption = $('#blogCaption')
         let keywords = $('#blogKeywords')
-        const keywordsArr = keywords.split(" ")
+        const keywordsArr = keywords.value.split(" ")
         const article = document.querySelector('#blogArticle')
+        const date = new Date().toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})
         let response = await fetch('/write/newBlog', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({title: title.value, caption: caption.value, keywords: keywordsArr, article: article.value})
+            body: JSON.stringify({title: title.value, caption: caption.value, keywords: keywordsArr, article: article.value, date: date})
         })
         let json = await response.json()
         console.log(json);

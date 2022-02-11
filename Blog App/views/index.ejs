@@ -31,21 +31,24 @@
                             <div class="innerCard colFlex">
                                 <i class="far fa-user-circle" style="color: white; font-size: 60px;"></i>
                                 <h3 style="margin-top: 8px;"><%=articles[counter].author %> </h3>
-                                <p>Posted </p>
+                                <p class="date"><%=articles[counter].date%></p>
                             </div>
                         </div>
                         <div class="rightCard colFlex">
                             <h2 class="aquaText" style="text-align: center;"><%=articles[counter].title %> </h2>
+                            <p class="caption"><%= articles[counter].caption %> </p>
                             <div class="rowFlex">
-                                <div class="keywords colFlex">
-                                    <p style="margin: 0; padding: 0;">NodeJS</p>
-                                </div>
-                                <div class="keywords">
-                                    <p style="margin: 0; padding: 0;">JavaScript</p>
-                                </div>
-                                <div class="keywords">
-                                    <p style="margin: 0; padding: 0;">React</p>
-                                </div>
+                                
+                                <% if(articles[counter].keywords) {%>
+                                    
+                                <% for(let i = 0; i < articles[counter].keywords.length; i++) {%>
+                                     
+                                    <div class="keywords colFlex">
+                                        <p style="margin: 0; padding: 0;"><%= articles[counter].keywords[i] %> </p>
+                                    </div>
+
+                                <% } %>  
+                                <% } %> 
                             </div>
                         </div>
                     </div>
