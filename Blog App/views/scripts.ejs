@@ -1,4 +1,38 @@
 <script>
+    let query = async () =>
+    {
+        let search = $('#search')
+        console.log(search)
+        let newQuery = await fetch('/search/'+search.value)
+        let articles = await newQuery.json()
+        for(let counter = 0; counter < articles.length; counter++)
+        {
+            let a = document.createElement('a')
+            a.href = "/article/"+articles[counter].title
+            let card = document.createElement('div')
+            card.className = "card"
+            let secondCard = document.createElement('div')
+            secondCard.classList.add('colFlex')
+            secondCard.classList.add('leftCard')
+            let thirdCard = document.createElement('div')
+            thirdCard.classList.add('innerCard')
+            thirdCard.classList.add('colFlex')
+            let i = document.createElement('i')
+            i.style = "color: white; font-size: 60px;"
+            i.className = "far fa-user-circle";
+            thirdCard.appendChild(i)
+            let h3 = document.createElement('h3')
+            h3.textContent = articles[counter].author
+            h3.style = "margin-top: 8px;"
+            thirdCard.appendChild(h3)
+            let p = document.createElement('p')
+            p.className = "date"
+            p.textContent = articles[counter].date
+            thirdCard.appendChild(p)
+        }
+        console.log(articles.data)
+    }
+
     let newPost = async () =>
     {
         let title = $('#blogTitle')

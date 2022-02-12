@@ -31,6 +31,7 @@ const bodyParser = require('body-parser')
 // MongoDB
 const {MongoClient, ObjectId} = require('mongodb')
 const uri = require('./uri.js')
+const { log } = require('console')
 const client = new MongoClient(uri)
 
 
@@ -110,6 +111,15 @@ async function run()
         let newDate = new Date(Date.parse(date)).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})
         const response = await db2.insertOne({title: title, author: `${user.first} ${user.last}`, caption: caption, article: article, keywords: keywords, likes: 0, comments: [], date: newDate});
         res.json({success: true, data: {message: "Thanks for sharing!"}});
+    })
+
+    app.get('/search/:search', async (req, res)=>
+    {
+        let {search} = req.params;
+        const response = await db2.find({article: {$regex: search}}).toArray()
+        console.log('here')
+        console.log("here", response)
+        res.json({success: true, data: response})
     })
 
     app.get('/settings', checkAuthenticated,(req, res)=>

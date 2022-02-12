@@ -19,6 +19,9 @@
     {
         color: var(--aqua);
     }
+    .hoverable:hover{
+        cursor: pointer;
+    }
     .colFlex
     {
         display: flex;
@@ -449,9 +452,28 @@
     #searchBox
     {
         position: absolute;
-        top: 20px;
+        top: 50px;
         left: 0;
         width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #searchButton
+    {
+        width: 60px;
+        height: 35px;
+        background: var(--aqua);
+        border-bottom-right-radius: 5px;
+        border-top-right-radius: 5px;
+        margin-left: -60px;
+        z-index: 10;
+    }
+
+    #searchButton i{
+        color: white;
+        font-size: 20px;
     }
 
     #searchBox input
@@ -459,7 +481,7 @@
         position: relative;
         width: 500px;
         height: 35px;
-        border-radius: 20px;
+        font-size: 20px;
         background: var(--main-white);
         border: none;
         box-shadow: 0 0 10px gray;
