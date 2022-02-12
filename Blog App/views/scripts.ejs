@@ -29,6 +29,41 @@
             p.className = "date"
             p.textContent = articles[counter].date
             thirdCard.appendChild(p)
+            secondCard.appendChild(thirdCard)
+            card.appendChild(secondCard)
+
+            let rightCard = document.createElement('div')
+            rightCard.classList.add("rightCard")
+            rightCard.classList.add("colFlex")
+            let h2 = document.createElement('h2')
+            h2.className= "aquaText"
+            h2.style = "text-align: center;"
+            h2.textContent = articles[counter].title;
+            rightCard.appendChild(h2)
+            let p2 = document.createElement('p')
+            p2.className = "caption"
+            p2.textContent = articles[counter].caption
+            rightCard.appendChild(p2);
+            let rowFlex = document.createElement('div')
+            rowFlex.className = "rowFlex";
+            if(articles[counter].keywords)
+            {
+                for(let inner = 0; inner < articles[counter].keywords.length; inner++)
+                {
+                    let temp = document.createElement('div')
+                    temp.classList.add('keywords')
+                    temp.classList.add('colFlex')
+                    let tempP = document.createElement('p')
+                    tempP.style = "margin: 0; padding: 0;"
+                    tempP.textContent = articles[counter].keywords[inner]
+                    temp.appendChild(tempP)
+                    rowFlex.appendChild(temp)
+                }
+            }
+            rightCard.appendChild(rowFlex)
+            card.appendChild(rightCard)
+            a.appendChild(card)
+            document.querySelector('#articleHolder').appendChild(a)
         }
         console.log(articles.data)
     }
