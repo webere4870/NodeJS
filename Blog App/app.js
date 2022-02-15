@@ -116,9 +116,9 @@ async function run()
     app.get('/search/:search', async (req, res)=>
     {
         let {search} = req.params;
+        console.log(search)
         const response = await db2.find({article: {$regex: search}}).toArray()
-        console.log('here')
-        console.log("here", response)
+        console.log(response)
         res.json({success: true, data: response})
     })
 

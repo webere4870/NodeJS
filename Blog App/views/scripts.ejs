@@ -1,12 +1,18 @@
 <script>
-    let query = async () =>
+    document.querySelector('#searchButton').addEventListener("click", query)
+    async function query ()
     {
         let search = $('#search')
-        console.log(search)
         let newQuery = await fetch('/search/'+search.value)
-        let articles = await newQuery.json()
+        let articlesTemp = await newQuery.json()
+        let {data} = articlesTemp
+        let articles = data
+        console.log(articles)
+        let removeArticles = document.querySelectorAll('#articleHolder > a')
+        
         for(let counter = 0; counter < articles.length; counter++)
         {
+            console.log("herefa")
             let a = document.createElement('a')
             a.href = "/article/"+articles[counter].title
             let card = document.createElement('div')
@@ -31,7 +37,7 @@
             thirdCard.appendChild(p)
             secondCard.appendChild(thirdCard)
             card.appendChild(secondCard)
-
+            console.log("here f")
             let rightCard = document.createElement('div')
             rightCard.classList.add("rightCard")
             rightCard.classList.add("colFlex")
@@ -46,6 +52,7 @@
             rightCard.appendChild(p2);
             let rowFlex = document.createElement('div')
             rowFlex.className = "rowFlex";
+            console.log("here5")
             if(articles[counter].keywords)
             {
                 for(let inner = 0; inner < articles[counter].keywords.length; inner++)
@@ -60,12 +67,13 @@
                     rowFlex.appendChild(temp)
                 }
             }
+            console.log("here")
             rightCard.appendChild(rowFlex)
             card.appendChild(rightCard)
             a.appendChild(card)
             document.querySelector('#articleHolder').appendChild(a)
         }
-        console.log(articles.data)
+        console.log("shouldnt")
     }
 
     let newPost = async () =>
@@ -157,8 +165,7 @@
         myDiv[0].classList.toggle("open");
     }
 
-    document.querySelector("#postComment").addEventListener("click",
-    async ()=>
+    document.querySelector("#postComment").addEventListener("click",async ()=>
     {
         console.log("here")
         let response = await fetch('/newCommenter/' + title, {
