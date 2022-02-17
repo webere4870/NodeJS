@@ -1,7 +1,16 @@
-<script>
+document.addEventListener('DOMContentLoaded', ()=>
+    {
+        let butty = document.querySelector('#searchButton')
+    if(butty)
+    {
+
+        
+        document.querySelector('#searchButton').addEventListener("click", query)
+
+    }
     async function query ()
     {
-        let search = document.querySelector('#search')
+        let search = $('#search')
         let newQuery = await fetch('/search/'+search.value)
         let articlesTemp = await newQuery.json()
         let {data} = articlesTemp
@@ -118,7 +127,7 @@
         let article = await fetch('/article');
     }
 
-    async function upLikes(title)
+    const upLikes = async (title) =>
     {
         let iconDivs = document.querySelectorAll('.iconCircle');
         if(iconDivs[0].classList.contains("unliked"))
@@ -132,7 +141,7 @@
             body: JSON.stringify({title: title})
             })
             let {likes} = await response.json();
-            let likeCount = document.querySelector('#likeCount')
+            let likeCount = $('#likeCount')
             let newText = document.createTextNode(likes);
             likeCount.textContent = "";
             likeCount.appendChild(newText);
@@ -163,8 +172,11 @@
         xBtn[0].classList.toggle("hide")
         myDiv[0].classList.toggle("open");
     }
-
-    document.querySelector("#postComment").addEventListener("click",async ()=>
+    let posty = document.querySelector("#postComment")
+    if(posty)
+    {
+    posty.addEventListener("click",
+    async () =>
     {
         console.log("here")
         let response = await fetch('/newCommenter/' + title, {
@@ -176,17 +188,5 @@
         const newby = await response.json();
         console.log(newby);
     })
-
-</script>
-
-<!-- let newComment = document.querySelector('#newComment')
-        let hiddenBox = document.querySelector('#hiddenBox')
-        let object = {comment: newComment, title: hiddenBox.value}
-        const response = await fetch('/newComment',
-        {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(object)
-        })
-        const jsonn = await response.json();
-        console.log(jsonn); -->
+}
+    })
