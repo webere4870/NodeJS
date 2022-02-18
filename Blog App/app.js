@@ -109,7 +109,7 @@ async function run()
         const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())});
         console.log(caption, keywords, article);
         let newDate = new Date(Date.parse(date)).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})
-        const response = await db2.insertOne({title: title, author: `${user.first} ${user.last}`, caption: caption, article: article, keywords: keywords, likes: 0, comments: [], date: newDate});
+        const response = await db2.insertOne({title: title, username: user.username, caption: caption, article: article, keywords: keywords, likes: 0, comments: [], date: newDate});
         res.json({success: true, data: {message: "Thanks for sharing!"}});
     })
 
@@ -131,9 +131,9 @@ async function run()
     {
         const page = req.params.page;
         console.log(page);
-        const {title, author, likes, comments, article} = await db2.findOne({title: page})
-        console.log(author);
-        res.render('article',{title: title, author: author, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString()});
+        const {title, username, likes, comments, article} = await db2.findOne({title: page})
+
+        res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString()});
     })
 
     app.post('/login', passport.authenticate('local', {
@@ -149,8 +149,8 @@ async function run()
         try
         {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
-            const {first, last, email} = req.body
-            const newUser = {first: first, last: last, email: email, password: hashedPassword}
+            const {first, last, email, username} = req.body
+            const newUser = {username: username, first: first, last: last, email: email, password: hashedPassword}
             await db.insertOne(newUser)
             res.redirect('login')
         }
@@ -166,6 +166,14 @@ async function run()
         req.logout()
         req.session.destroy()
         res.redirect('/login')
+    })
+
+    app.get('/profile/:username', async (req, res)=>
+    {
+        const {username} = req.params
+        let user = await db.findOne({username: username})
+        console.log(user.email)
+        res.render('profile')
     })
 
     app.post('/likes/:article', async (req, res) =>
@@ -199,12 +207,12 @@ async function run()
     app.post('/newComment/', async (req, res)=>
     {
         let {comment, title} = req.body
-        const {first, last} = await db.findOne({'_id': ObjectId(req.session.passport.user)});
-        const postComment = { _id: ObjectId(req.session.passport.user), name: `${first} ${last}`, comment: comment};
+        const user1 = await db.findOne({'_id': ObjectId(req.session.passport.user)});
+        const postComment = { _id: ObjectId(req.session.passport.user), username: user1.username, comment: comment};
          const response = await db2.findOneAndUpdate({title: title}, {$push: {comments: postComment}});
-         const {author, likes, comments, article} = await db2.findOne({title: title})
+         const {username, likes, comments, article} = await db2.findOne({title: title})
         console.log(ObjectId(req.session.passport.user))
-        res.render('article',{title: title, author: author, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString()});
+        res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString()});
     })
 
     function checkAuthenticated(req, res, next)

@@ -1,5 +1,10 @@
 <h1><%= title %> </h1>
-<p>Author: <%= author %> </p>
+<div class="rowFlex">
+    <p>Author: </p>
+    <a style="margin-left: -10px; margin-top: -3px; padding: 0;" href="/profile/<%=username %> ">
+        <p><%= username %></p>
+    </a>
+</div>
 <div id="article">
     <p><%= article %> </p>
 </div>
