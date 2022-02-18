@@ -172,8 +172,8 @@ async function run()
     {
         const {username} = req.params
         let user = await db.findOne({username: username})
-        console.log(user.email)
-        res.render('profile')
+        let articles = await db2.find({username: username}).toArray()
+        res.render('profile', {user: user, articles: articles})
     })
 
     app.post('/likes/:article', async (req, res) =>

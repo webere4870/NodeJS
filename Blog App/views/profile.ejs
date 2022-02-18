@@ -1,3 +1,65 @@
 <%- include('./navigation') %> 
 <%- include('./logout') %> 
-<h1>Profile!</h1>
+<div class="colFlex">
+    <div class="profilePic colFlex">
+        <i class="bi bi-person-fill"></i>
+    </div>
+    <h2 style="color: gray; font-weight: lighter;"><%= user.username %> </h2>
+    <h1><%= user.first%> <%= user.last %></h1>
+    <div class="rowFlex">
+        <div>
+            <p>Followers: >>></p>
+        </div>
+        <div>
+            <p>Following: >>></p>
+        </div>
+    </div>
+    <h3>Posts</h3>
+    <div class="rowFlex" class="articleHolder" style="width: 100%;">
+        <!-- <a href="/article/What is React">
+            <div class="card">
+                <img src="/images/react.png" alt="">
+                <div class="bottomCard colFlex">
+                    <h2>What is React?</h2>
+                    <p>Posted: 1/23/2022</p>
+                </div>
+            </div>
+        </a> -->
+        <% if(articles) {  %>
+            <% for(let counter = 0; counter < articles.length; counter++) {%>
+                <a href="/article/<%=articles[counter].title %>">
+                    <div class="card">
+                        <div class="leftCard colFlex">
+                            <div class="innerCard colFlex">
+                                <i class="far fa-user-circle" style="color: white; font-size: 60px;"></i>
+                                <div>
+                                    <h3 style="margin-top: 8px;"  onclick="location.href = '/profile/<%= articles[counter].username %>'; event.stopPropagation(); console.log('here');; document.querySelectorAll('.articleHolder > a')[counter].preventDefault()"><%=articles[counter].username %> </h3>
+                                </div>
+                                <p class="date"><%=articles[counter].date%></p>
+                            </div>
+                        </div>
+                        <div class="rightCard colFlex">
+                            <h2 class="aquaText" style="text-align: center;"><%=articles[counter].title %> </h2>
+                            <p class="caption"><%= articles[counter].caption %> </p>
+                            <div class="rowFlex">
+                                
+                                <% if(articles[counter].keywords) {%>
+                                    
+                                <% for(let i = 0; i < articles[counter].keywords.length; i++) {%>
+                                     
+                                    <div class="keywords colFlex">
+                                        <p style="margin: 0; padding: 0;"><%= articles[counter].keywords[i] %> </p>
+                                    </div>
+    
+                                <% } %>  
+                                <% } %> 
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            <% } %> 
+        <% } %>  
+    
+    </div>
+    
+</div>

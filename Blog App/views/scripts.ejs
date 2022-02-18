@@ -1,4 +1,10 @@
 <script>
+
+    function loadPage(location)
+    {
+        window.location.href = location
+    }
+    
     async function query ()
     {
         let search = document.querySelector('#search')
@@ -7,7 +13,7 @@
         let {data} = articlesTemp
         let articles = data
         console.log(articles)
-        let removeArticles = document.querySelectorAll('#articleHolder > a')
+        let removeArticles = document.querySelectorAll('.articleHolder > a')
         for(let temp of removeArticles)
         {
             temp.remove()
