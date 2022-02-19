@@ -1,21 +1,51 @@
 <%- include('./navigation') %> 
 <%- include('./logout') %> 
+
+<div id="followers" style="display: none;" class="engagementCard hide">
+    <div class="profileSubCard">
+         
+    <% if(typeof user.followers.length != 'undefined') {%> 
+        <% for(let counter = 0; counter < user.followers.length; counter++) {%> 
+            <div>
+                <i class="bi bi-person-fill"></i><a href="/profile/<%= user.followers[counter]%>"><%= user.followers[counter]%></a>
+            </div>
+        <%  }%> 
+    <% } %> 
+    </div>
+    <div class="closeBtn" style="position: unset; margin-top: -380px; margin-left: 15px;" onclick="toggle('#followers')">
+        <i class="far fa-times-circle" style="color: white;"></i>
+    </div> 
+</div>
+
+<div id="following" style="display: none;" class="engagementCard hide">
+    <div class="profileSubCard">
+         
+    <% if(typeof user.following.length != 'undefined') {%> 
+        <% for(let counter = 0; counter < user.following.length; counter++) {%> 
+            <div>
+                <i class="bi bi-person-fill"></i><a href="/profile/<%= user.following[counter]%>"><%= user.following[counter]%></a>
+            </div>
+        <%  }%> 
+    <% } %> 
+    </div>
+    <div class="closeBtn" style="position: unset; margin-top: -380px; margin-left: 15px;" onclick="toggle('#following')">
+        <i class="far fa-times-circle" style="color: white;"></i>
+    </div> 
+</div>
+
 <div class="colFlex">
     <div class="profilePic colFlex">
         <i class="bi bi-person-fill"></i>
     </div>
-    <h2 style="color: gray; font-weight: lighter;"><%= user.username %> </h2>
     <h1><%= user.first%> <%= user.last %></h1>
-    <div class="rowFlex">
+    <div class="rowFlex" style="margin-bottom: 20px;">
         <div>
-            <p>Followers: >>></p>
+            <p>Followers: <span class="aquaText hoverable" onclick="toggle('#followers')"><%= user.followers.length %> </span></p>
         </div>
         <div>
-            <p>Following: >>></p>
+            <p>Following: <span class="aquaText hoverable" onclick="toggle('#following')"><%= user.followers.length %> </span></p>
         </div>
     </div>
-    <h3>Posts</h3>
-    
     <%- include('./card') %> 
     
 </div>

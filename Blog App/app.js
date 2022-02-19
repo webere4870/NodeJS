@@ -150,7 +150,7 @@ async function run()
         {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
             const {first, last, email, username} = req.body
-            const newUser = {username: username, first: first, last: last, email: email, password: hashedPassword}
+            const newUser = {username: username, first: first, last: last, email: email, password: hashedPassword, followers: [], following: []}
             await db.insertOne(newUser)
             res.redirect('login')
         }

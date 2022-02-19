@@ -1,8 +1,8 @@
 <script>
 
-    function loadPage(location)
+    function toggle(query)
     {
-        window.location.href = location
+        $(query).toggle()
     }
 
     async function query ()
@@ -166,9 +166,9 @@
     */
     let newPost = async () =>
     {
-        let title = $('#blogTitle')
-        let caption = $('#blogCaption')
-        let keywords = $('#blogKeywords')
+        let title = f('#blogTitle')
+        let caption = f('#blogCaption')
+        let keywords = f('#blogKeywords')
         const keywordsArr = keywords.value.split(" ")
         const article = document.querySelector('#blogArticle')
         const date = new Date().toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})
@@ -185,7 +185,7 @@
         caption.value =""
     }
 
-    const $ = (query) => document.querySelector(query)
+    const f = (query) => document.querySelector(query)
 
     const getLikes = async (title) =>
     {
@@ -197,7 +197,7 @@
         })
         console.log(response);
         let {likes} = await response.json();
-        let likeCount = $('#likeCount')
+        let likeCount = f('#likeCount')
         let newText = document.createTextNode(likes);
         likeCount.appendChild(newText);
     }
@@ -238,7 +238,7 @@
             })
             let {likes} = await response.json();
             console.log(likes);
-            let likeCount = $('#likeCount')
+            let likeCount = f('#likeCount')
             let newText = document.createTextNode(likes);
             likeCount.textContent = "";
             likeCount.appendChild(newText);
