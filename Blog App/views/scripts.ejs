@@ -4,7 +4,87 @@
     {
         window.location.href = location
     }
+
+    async function query ()
+    {
+        let search = document.querySelector('#search')
+        let newQuery = await fetch('/search/'+search.value)
+        let articlesTemp = await newQuery.json()
+        let {data} = articlesTemp
+        let articles = data
+        console.log(articles)
+        let removeArticles = document.querySelectorAll('.articleHolder > a')
+        for(let temp of removeArticles)
+        {
+            temp.remove()
+        }
+        for(let counter = 0; counter < articles.length; counter++)
+        {
+            console.log("herefa")
+            let card = document.createElement('div')
+            card.className = "card"
+            let secondCard = document.createElement('div')
+            secondCard.classList.add('colFlex')
+            secondCard.classList.add('leftCard')
+            let thirdCard = document.createElement('div')
+            thirdCard.classList.add('innerCard')
+            thirdCard.classList.add('colFlex')
+            let i = document.createElement('i')
+            i.style = "color: white; font-size: 60px;"
+            i.className = "far fa-user-circle";
+            thirdCard.appendChild(i)
+            let h3 = document.createElement('h3')
+            h3.textContent = articles[counter].author
+            h3.style = "margin-top: 8px;"
+            thirdCard.appendChild(h3)
+            let p = document.createElement('p')
+            p.className = "date"
+            p.textContent = articles[counter].date
+            thirdCard.appendChild(p)
+            secondCard.appendChild(thirdCard)
+            card.appendChild(secondCard)
+            console.log("here f")
+            let overLink = document.createElement('a');
+            overLink.href = "/article/"+articles[counter].title
+            let rightCard = document.createElement('div')
+            rightCard.classList.add("rightCard")
+            rightCard.classList.add("colFlex")
+            let h2 = document.createElement('h2')
+            h2.className= "aquaText"
+            h2.style = "text-align: center;"
+            h2.textContent = articles[counter].title;
+            rightCard.appendChild(h2)
+            let p2 = document.createElement('p')
+            p2.className = "caption"
+            p2.textContent = articles[counter].caption
+            rightCard.appendChild(p2);
+            let rowFlex = document.createElement('div')
+            rowFlex.className = "rowFlex";
+            console.log("here5")
+            if(articles[counter].keywords)
+            {
+                for(let inner = 0; inner < articles[counter].keywords.length; inner++)
+                {
+                    let temp = document.createElement('div')
+                    temp.classList.add('keywords')
+                    temp.classList.add('colFlex')
+                    let tempP = document.createElement('p')
+                    tempP.style = "margin: 0; padding: 0;"
+                    tempP.textContent = articles[counter].keywords[inner]
+                    temp.appendChild(tempP)
+                    rowFlex.appendChild(temp)
+                }
+            }
+            console.log("here")
+            rightCard.appendChild(rowFlex)
+            overLink.appendChild(rightCard)
+            card.appendChild(overLink)
+            document.querySelector('#articleHolder').appendChild(card)
+        }
+        console.log("shouldnt")
+    }
     
+    /*
     async function query ()
     {
         let search = document.querySelector('#search')
@@ -83,7 +163,7 @@
         }
         console.log("shouldnt")
     }
-
+    */
     let newPost = async () =>
     {
         let title = $('#blogTitle')
