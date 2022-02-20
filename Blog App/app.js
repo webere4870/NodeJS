@@ -151,7 +151,7 @@ async function run()
         {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
             const {first, last, email, username} = req.body
-            const newUser = {username: username, first: first, last: last, email: email, password: hashedPassword, followers: [], following: []}
+            const newUser = {username: username, first: first, last: last, email: email, password: hashedPassword, followers: [], following: [], biography: "", icon: "bi bi-robot", color: "#0099ff"}
             await db.insertOne(newUser)
             res.redirect('login')
         }
@@ -179,11 +179,11 @@ async function run()
 
     app.post('/profile/settings', async (req, res) =>
     {
-        const {username, icon} = req.body;
-        console.log(username, icon);
+        const {username, icon, biography, color} = req.body;
+        console.log(username, icon, biography, color);
         let changeProfile = await db.updateOne({username: username}, 
             {
-                $set:{icon: icon}
+                $set:{icon: icon, biography: biography, color: color}
             })
         res.json({success: true});
     })

@@ -9,12 +9,14 @@
     async function updateProfile(username)
     {
         let className = $('#selectedSquare > i').attr("class")
+        let biography = $('#biography').val()
+        let color = $('#color').val()
         console.log(username)
         let response  = await fetch('/profile/settings', 
         {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({username: username, icon: className})
+            body: JSON.stringify({username: username, icon: className, biography: biography, color: color})
         })
         let json = await response.json();
         window.location.href = "/profile/"+username;

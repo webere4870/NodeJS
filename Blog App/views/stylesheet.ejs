@@ -2,14 +2,15 @@
     :root
     {
         --main-white: #e7e7e7;
-        --aqua: #0099ff;
+        --aqua: #ae00ff;
         --main-gray: #1f2833;
         font-family: 'Poiret One', cursive;
     }
     *
     {
         margin: 0;
-        padding: 0;box-sizing: border-box;
+        padding: 0;
+        box-sizing: border-box;
         
     }
     html, body{
@@ -416,11 +417,17 @@
         height: 70px;
         width: 70px;
         border-radius: 5px;
-        margin: 10px;
+        margin: 5px;
         box-shadow: 0 0 5px gray;
         transition-timing-function: ease;
         transition-duration: .3s;
         transition-property: all;
+    }
+
+    input[type="color"]
+    {
+        height: 250px;
+        width: 250px;
     }
 
     .iconSquare:hover{
@@ -597,6 +604,21 @@
     #searhBox input:hover{
         cursor: pointer;
         box-shadow: 0 0 15px gray;
+    }
+
+
+
+    #biography{
+        height: 250px;
+        width: 400px;
+        border-radius: 5px;
+        background: var(--main-white);
+        box-shadow: 0 0 10px gray;
+        color: var(--aqua);
+        font-family: 'Poiret One', cursive;
+        padding: 5px;
+        font-size: 20px;
+        margin: 0 40px;
     }
 
     .inputWrap input, .inputWrap textarea
