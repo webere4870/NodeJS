@@ -32,11 +32,8 @@
         <i class="far fa-times-circle" style="color: white;"></i>
     </div> 
 </div>
-
 <div class="colFlex">
-    <div class="profilePic colFlex">
-        <i class="bi bi-person-fill"></i>
-    </div>
+    <%- include('./profilepic') %> 
     <h1><%= user.first%> <%= user.last %></h1>
     <div class="rowFlex" style="margin-bottom: 20px;">
         <div>
@@ -47,5 +44,4 @@
         </div>
     </div>
     <%- include('./card') %> 
-    
 </div>

@@ -1,2 +1,26 @@
 <%- include('./navigation') %> 
 <%- include('./logout') %> 
+
+<div class="grid colFlex">
+    <p style="display: none;" id="helper"><%= icon %> </p>
+    <h1>Change Icon</h1>
+    <div class="rowFlex">
+        <div class="iconSquare hoverable"><i class="bi bi-github"></i></div>
+        <div class="iconSquare hoverable"><i class="bi bi-git"></i></div>
+        <div class="iconSquare hoverable"><i class="bi bi-cpu-fill"></i></div>
+    </div>
+    <div class="rowFlex">
+        <div class="iconSquare hoverable"><i class="bi bi-discord"></i></div>
+        <div class="iconSquare hoverable"><i class="bi bi-robot"></i></div>
+        <div class="iconSquare hoverable"><i class="bi bi-server"></i></div>
+    </div>
+    <div class="rowFlex">
+        <div class="iconSquare hoverable"><i class="bi bi-stack-overflow"></i></div>
+        <div class="iconSquare hoverable"><i class="bi bi-controller"></i></div>
+        <div class="iconSquare hoverable"><i class="bi bi-dpad-fill"></i></div>
+    </div>
+</div>
+
+<div id="submitBtn" style="margin-top: 10px;" onclick="updateProfile('<%= username%>')">
+    <p>Update</p>
+</div>

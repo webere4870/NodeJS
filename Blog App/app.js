@@ -122,9 +122,10 @@ async function run()
         res.json({success: true, data: response})
     })
 
-    app.get('/settings', checkAuthenticated,(req, res)=>
+    app.get('/settings', checkAuthenticated, async (req, res)=>
     {
-        res.render('settings')
+        const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())});
+        res.render('settings', user)
     })
 
     app.get('/article/:page', checkAuthenticated, async (req, res)=>
@@ -174,6 +175,17 @@ async function run()
         let user = await db.findOne({username: username})
         let articles = await db2.find({username: username}).toArray()
         res.render('profile', {user: user, articles: articles})
+    })
+
+    app.post('/profile/settings', async (req, res) =>
+    {
+        const {username, icon} = req.body;
+        console.log(username, icon);
+        let changeProfile = await db.updateOne({username: username}, 
+            {
+                $set:{icon: icon}
+            })
+        res.json({success: true});
     })
 
     app.post('/likes/:article', async (req, res) =>

@@ -403,10 +403,53 @@
         overflow-x: hidden;
     }
 
+    #selectedSquare
+    {
+        background: var(--aqua);
+    }
+
+    .iconSquare{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: var(--main-gray);
+        height: 70px;
+        width: 70px;
+        border-radius: 5px;
+        margin: 10px;
+        box-shadow: 0 0 5px gray;
+        transition-timing-function: ease;
+        transition-duration: .3s;
+        transition-property: all;
+    }
+
+    .iconSquare:hover{
+        box-shadow: 0 0 25px gray;
+    }
+
+    .iconSquare i{
+        font-size: 40px;
+    }
+
     .hide{
         display: none;
     }
 
+    .profilePicture
+    {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80px;
+        width: 80px;
+        border-radius: 50%;
+        background: var(--aqua);
+    }
+
+    .profilePicture i{
+        color: white;
+        font-size: 50px;
+    }
 
     .profilePic i{
         color: var(--aqua);

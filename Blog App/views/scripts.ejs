@@ -1,4 +1,30 @@
 <script>
+    document.addEventListener("DOMContentLoaded", (evt)=>
+    {
+        let mySelector = "."+ $('#helper').text().split(" ")[1];
+        console.log(mySelector)
+        let temp = document.querySelectorAll(mySelector)[0].parentNode
+        temp.setAttribute("id", "selectedSquare")
+    })
+    async function updateProfile(username)
+    {
+        let className = $('#selectedSquare > i').attr("class")
+        console.log(username)
+        let response  = await fetch('/profile/settings', 
+        {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username: username, icon: className})
+        })
+        let json = await response.json();
+        window.location.href = "/profile/"+username;
+    }
+
+    $('.iconSquare').click((evt)=>
+    {
+        $('#selectedSquare').attr("id", "");
+        $(evt.currentTarget).attr("id", "selectedSquare")
+    })
 
     function toggle(query)
     {
