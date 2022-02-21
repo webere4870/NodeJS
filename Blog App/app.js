@@ -92,9 +92,17 @@ async function run()
 
     app.get('/', checkAuthenticated, async (req, res)=>
     {
+        const {following} = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
+        const articles = await db2.find({username: {$in: following}}).toArray();
+        console.log(articles)
+        res.render('index', {articles: articles});
+    })
+
+    app.get('/explore', async (req, res)=>
+    {
         const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
         const articles = await db2.find().toArray();
-        res.render('index', {name: `${user.first} ${user.last}`, articles: articles})
+        res.render('explore', {name: `${user.first} ${user.last}`, articles: articles})
     })
 
     app.get('/write', checkAuthenticated,(req, res)=>

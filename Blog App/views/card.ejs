@@ -5,7 +5,10 @@
                 <div class="card">
                         <div class="leftCard colFlex">
                             <div class="innerCard colFlex">
-                                <i class="far fa-user-circle" style="color: white; font-size: 60px;"></i>
+                                <div class="profilePicture">
+                                    <i class="<%= articles[counter] %>"></i>
+                                </div>
+                                <!-- <i class="far fa-user-circle" style="color: white; font-size: 60px;"></i> -->
                                 <a href="/profile/<%= articles[counter].username %> ">
                                     <h3 style="margin-top: 8px;"><%=articles[counter].username %> </h3>
                                 </a>

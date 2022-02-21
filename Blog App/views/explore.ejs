@@ -1,0 +1,17 @@
+
+<div style="position: absolute; top: 15px; right: 15px; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+    <form action="/logout" method="POST">
+        <input type="submit" value="Logout">
+    </form>
+    <a><%= name %> </a>
+</div>
+
+<div class="colFlex" style="width: 100%;">
+    <h1>Explore.</h1>
+    <div id="searchBox">
+        <input type="search" id="search" name="search">
+        <button id="searchButton" class="colFlex hoverable"><i class="bi bi-search" onclick="query()"></i></button>
+    </div> 
+
+    <%- include('./card') %> 
+</div>
