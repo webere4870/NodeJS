@@ -94,15 +94,30 @@ async function run()
     {
         const {following} = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
         const articles = await db2.find({username: {$in: following}}).toArray();
-        console.log(articles)
-        res.render('index', {articles: articles});
+        let newIcons = await getIcons(articles);
+        res.render('index', {articles: articles, icons: newIcons});
     })
+
+    async function getIcons(articles)
+    {
+        let usernameList = [];
+        for(let counter = 0; counter < articles.length; counter++)
+        {
+            usernameList.push(articles[counter].username)
+        }
+        const followingIcons = await db.find({username: {$in: usernameList}}).toArray()
+        const newIcons = followingIcons.map((temp) => {
+            return temp.icon;
+        })
+        return newIcons;
+    }
 
     app.get('/explore', async (req, res)=>
     {
         const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
         const articles = await db2.find().toArray();
-        res.render('explore', {name: `${user.first} ${user.last}`, articles: articles})
+        let newIcons = await getIcons(articles)
+        res.render('explore', {name: `${user.first} ${user.last}`, articles: articles, icons: newIcons})
     })
 
     app.get('/write', checkAuthenticated,(req, res)=>
@@ -182,7 +197,8 @@ async function run()
         const {username} = req.params
         let user = await db.findOne({username: username})
         let articles = await db2.find({username: username}).toArray()
-        res.render('profile', {user: user, articles: articles})
+        let newIcons = await getIcons(articles);
+        res.render('profile', {user: user, articles: articles, icons: newIcons})
     })
 
     app.post('/profile/settings', async (req, res) =>
