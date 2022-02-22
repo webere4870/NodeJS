@@ -32,6 +32,7 @@ const bodyParser = require('body-parser')
 const {MongoClient, ObjectId} = require('mongodb')
 const uri = require('./uri.js')
 const { log } = require('console')
+const { get } = require('express/lib/response')
 const client = new MongoClient(uri)
 
 
@@ -112,12 +113,25 @@ async function run()
         return hashMap;
     }
 
+    async function getIconsString(list)
+    {
+        let usernameList = [];
+        for(let counter = 0; counter < list.length; counter++)
+        {
+            usernameList.push(list[counter])
+        }
+        const followingIcons = await db.find({username: {$in: usernameList}}).toArray()
+        const hashMap = followingIcons.map((temp) => {
+            return {username: temp.username, icon: temp.icon};
+        })
+        return hashMap;
+    }
+
     app.get('/explore', async (req, res)=>
     {
         const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
         const articles = await db2.find().toArray();
         let hashMap = await getIcons(articles)
-        console.log(hashMap)
         res.render('explore', {name: `${user.first} ${user.last}`, articles: articles, hashMap: hashMap})
     })
 
@@ -129,9 +143,7 @@ async function run()
     app.post('/write/newBlog', async (req, res)=>
     {
         const {title, keywords, caption, article, date} = req.body;
-        console.log(req.body)
         const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())});
-        console.log(caption, keywords, article);
         let newDate = new Date(Date.parse(date)).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})
         const response = await db2.insertOne({title: title, username: user.username, caption: caption, article: article, keywords: keywords, likes: 0, comments: [], date: newDate});
         res.json({success: true, data: {message: "Thanks for sharing!"}});
@@ -140,9 +152,7 @@ async function run()
     app.get('/search/:search', async (req, res)=>
     {
         let {search} = req.params;
-        console.log(search)
         const response = await db2.find({article: {$regex: search}}).toArray()
-        console.log(response)
         res.json({success: true, data: response})
     })
 
@@ -155,13 +165,11 @@ async function run()
     app.get('/article/:page', checkAuthenticated, async (req, res)=>
     {
         const page = req.params.page;
-        console.log(page);
         const {title, username, likes, comments, article} = await db2.findOne({title: page})
         let commentsArr = comments.map((temp)=>
         {
             return temp.username
         })
-        console.log(commentsArr);
         let userIcons = await db.find({username: {$in: commentsArr}}).toArray()
         let hashMap = await getIcons(userIcons);
         res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString(), hashMap: hashMap});
@@ -205,13 +213,14 @@ async function run()
         let user = await db.findOne({username: username})
         let articles = await db2.find({username: username}).toArray()
         let hashMap = await getIcons(articles);
-        res.render('profile', {user: user, articles: articles, hashMap: hashMap})
+        let followersHash = await getIconsString(user.followers)
+        let followingHash = await getIconsString(user.following)
+        res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash})
     })
 
     app.post('/profile/settings', async (req, res) =>
     {
         const {username, icon, biography, color} = req.body;
-        console.log(username, icon, biography, color);
         let changeProfile = await db.updateOne({username: username}, 
             {
                 $set:{icon: icon, biography: biography, color: color}
@@ -254,7 +263,6 @@ async function run()
         const postComment = { _id: ObjectId(req.session.passport.user), username: user1.username, comment: comment};
          const response = await db2.findOneAndUpdate({title: title}, {$push: {comments: postComment}});
          const {username, likes, comments, article} = await db2.findOne({title: title})
-        console.log(ObjectId(req.session.passport.user))
         res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString()});
     })
 
