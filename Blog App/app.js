@@ -94,8 +94,8 @@ async function run()
     {
         const {following} = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
         const articles = await db2.find({username: {$in: following}}).toArray();
-        let newIcons = await getIcons(articles);
-        res.render('index', {articles: articles, icons: newIcons});
+        let hashMap = await getIcons(articles);
+        res.render('index', {articles: articles, hashMap: hashMap});
     })
 
     async function getIcons(articles)
@@ -106,18 +106,19 @@ async function run()
             usernameList.push(articles[counter].username)
         }
         const followingIcons = await db.find({username: {$in: usernameList}}).toArray()
-        const newIcons = followingIcons.map((temp) => {
-            return temp.icon;
+        const hashMap = followingIcons.map((temp) => {
+            return {username: temp.username, icon: temp.icon};
         })
-        return newIcons;
+        return hashMap;
     }
 
     app.get('/explore', async (req, res)=>
     {
         const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
         const articles = await db2.find().toArray();
-        let newIcons = await getIcons(articles)
-        res.render('explore', {name: `${user.first} ${user.last}`, articles: articles, icons: newIcons})
+        let hashMap = await getIcons(articles)
+        console.log(hashMap)
+        res.render('explore', {name: `${user.first} ${user.last}`, articles: articles, hashMap: hashMap})
     })
 
     app.get('/write', checkAuthenticated,(req, res)=>
@@ -156,8 +157,14 @@ async function run()
         const page = req.params.page;
         console.log(page);
         const {title, username, likes, comments, article} = await db2.findOne({title: page})
-
-        res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString()});
+        let commentsArr = comments.map((temp)=>
+        {
+            return temp.username
+        })
+        console.log(commentsArr);
+        let userIcons = await db.find({username: {$in: commentsArr}}).toArray()
+        let hashMap = await getIcons(userIcons);
+        res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString(), hashMap: hashMap});
     })
 
     app.post('/login', passport.authenticate('local', {
@@ -197,8 +204,8 @@ async function run()
         const {username} = req.params
         let user = await db.findOne({username: username})
         let articles = await db2.find({username: username}).toArray()
-        let newIcons = await getIcons(articles);
-        res.render('profile', {user: user, articles: articles, icons: newIcons})
+        let hashMap = await getIcons(articles);
+        res.render('profile', {user: user, articles: articles, hashMap: hashMap})
     })
 
     app.post('/profile/settings', async (req, res) =>
