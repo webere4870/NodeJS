@@ -3,10 +3,20 @@
 
 <div class="colFlex" style="width: 100%;">
     <h1>Explore.</h1>
+    <div id="searchOptions">
+        <div class="rowFlex">
+            <div class="searchOptions hoverable" id="selectedSearch"><p>
+                Articles
+            </p></div>
+            <div class="searchOptions hoverable"><p>
+                People
+            </p></div>
+        </div>
+    </div>
     <div id="searchBox">
         <input type="search" id="search" name="search">
         <button id="searchButton" class="colFlex hoverable"><i class="bi bi-search" onclick="query()"></i></button>
     </div> 
-
+    
     <%- include('./card') %> 
 </div>

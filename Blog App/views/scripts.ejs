@@ -1,6 +1,10 @@
 <script>
 
-    
+    $('.searchOptions').click((evt)=>
+    {
+        $('#selectedSearch').attr("id", "");
+        $(evt.currentTarget).attr("id", "selectedSearch")
+    })
 
     document.addEventListener("DOMContentLoaded", (evt)=>
     {

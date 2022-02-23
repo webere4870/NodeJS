@@ -235,6 +235,16 @@ async function run()
         res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash})
     })
 
+    app.get('/profile', checkAuthenticated, async (req, res)=>
+    {
+        let user = await db.findOne({'_id': ObjectId(req.session.passport.user)})
+        let articles = await db2.find({username: user.username}).toArray()
+        let hashMap = await getIcons(articles);
+        let followersHash = await getIconsString(user.followers)
+        let followingHash = await getIconsString(user.following)
+        res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash})
+    })
+
     app.post('/profile/settings', async (req, res) =>
     {
         const {username, icon, biography, color} = req.body;

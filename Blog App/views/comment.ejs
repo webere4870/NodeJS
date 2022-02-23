@@ -5,7 +5,7 @@
         </div>
         <div id="cardComments">
             <% if(comments) {%> 
-                <% console.log(hashMap) %> 
+                <% console.log(hashMap, "trying") %> 
             <% for(let counter = 0; counter < comments.length; counter++){ %> 
                 <% let iconIndex = 0; %> 
                 <div class="userComment blueComment" >
@@ -17,7 +17,9 @@
                                 <% } %> 
                         <% } %> 
                         <div class="profilePicture commentPic">
+                            <% if(hashMap.length > 0) {%> 
                             <i class="<%= hashMap[iconIndex].icon %>"></i>
+                            <% } %> 
                         </div>
                     </a>
                     <p style="padding: 0; margin: 0;"><%= comments[counter].comment %> </p>
