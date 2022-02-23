@@ -130,10 +130,19 @@ async function run()
 
     app.get('/explore', async (req, res)=>
     {
-        const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
-        const articles = await db2.find().toArray();
-        let hashMap = await getIcons(articles)
-        res.render('explore', {name: `${user.first} ${user.last}`, articles: articles, hashMap: hashMap})
+        if(req.session.passport)
+        {
+            const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
+            const articles = await db2.find().toArray();
+            let hashMap = await getIcons(articles)
+            res.render('explore', {name: `${user.first} ${user.last}`, articles: articles, hashMap: hashMap})
+        }
+        else
+        {
+            const articles = await db2.find().toArray();
+            let hashMap = await getIcons(articles)
+            res.render('explore', {articles: articles, hashMap: hashMap})
+        }
     })
 
     app.get('/write', checkAuthenticated,(req, res)=>
@@ -163,7 +172,7 @@ async function run()
         res.render('settings', user)
     })
 
-    app.get('/article/:page', checkAuthenticated, async (req, res)=>
+    app.get('/article/:page', async (req, res)=>
     {
         const page = req.params.page;
         const {title, username, likes, comments, article} = await db2.findOne({title: page})
@@ -173,7 +182,14 @@ async function run()
         })
         let userIcons = await db.find({username: {$in: commentsArr}}).toArray()
         let hashMap = await getIcons(userIcons);
-        res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString(), hashMap: hashMap});
+        if(req.session.passport)
+        {
+            res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString(), hashMap: hashMap});
+        }
+        else
+        {
+            res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article,  hashMap: hashMap});
+        }
     })
 
     app.post('/login', passport.authenticate('local', {

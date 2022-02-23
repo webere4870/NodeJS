@@ -8,7 +8,7 @@
                 <% console.log(hashMap) %> 
             <% for(let counter = 0; counter < comments.length; counter++){ %> 
                 <% let iconIndex = 0; %> 
-                <div class="userComment <% if(userID == comments[counter]._id) {%>blueComment<% } %>" >
+                <div class="userComment blueComment" >
                     <a href="/profile/<%= comments[counter].username %> ">
                         <h3><%= comments[counter].username %></h3>
                         <% for(let i = 0; i < hashMap.length; i++) {%> 
