@@ -5,10 +5,20 @@
         </div>
         <div id="cardComments">
             <% if(comments) {%> 
+                <% console.log(hashMap) %> 
             <% for(let counter = 0; counter < comments.length; counter++){ %> 
+                <% let iconIndex = 0; %> 
                 <div class="userComment <% if(userID == comments[counter]._id) {%>blueComment<% } %>" >
                     <a href="/profile/<%= comments[counter].username %> ">
-                        <h3><%= comments[counter].username %> <i class="far fa-user-circle" id="myBlue" style="font-size: 20px;"></i></h3>
+                        <h3><%= comments[counter].username %></h3>
+                        <% for(let i = 0; i < hashMap.length; i++) {%> 
+                            <% if(hashMap[i].username == comments[counter].username) {%>
+                                <% iconIndex = i; %> 
+                                <% } %> 
+                        <% } %> 
+                        <div class="profilePicture commentPic">
+                            <i class="<%= hashMap[iconIndex].icon %>"></i>
+                        </div>
                     </a>
                     <p style="padding: 0; margin: 0;"><%= comments[counter].comment %> </p>
                 </div>
@@ -18,7 +28,7 @@
         <form class="form colFlex" action="/newComment/" method="POST">
             <textarea name="comment" id="newComment" cols="30" rows="10" placeholder="Write a message..."></textarea>
             <input type="text" name="title" value="<%= title %>" style="display: none;" id="hiddenBox">
-            <button style="align-self: flex-end; margin-top: 7px;" id="postComment" class="btn" onclick="postComm">Submit</button>
+            <button style="align-self: flex-end; margin-top: 7px;" id="postComment" class="btn" onclick="postComm()">Submit</button>
         </form> 
     </div>
 </div>

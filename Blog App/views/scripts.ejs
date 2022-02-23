@@ -287,12 +287,11 @@
     async function postComm()
     {
         console.log("here")
-        let response = await fetch('/newCommenter/' + title, {
+        let response = await fetch('/newComment/' + title, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({title: title})
             })
-        console.log("her3");
         const newby = await response.json();
         console.log(newby);
     }

@@ -33,6 +33,7 @@ const {MongoClient, ObjectId} = require('mongodb')
 const uri = require('./uri.js')
 const { log } = require('console')
 const { get } = require('express/lib/response')
+const { getCipherInfo } = require('crypto')
 const client = new MongoClient(uri)
 
 
@@ -263,7 +264,16 @@ async function run()
         const postComment = { _id: ObjectId(req.session.passport.user), username: user1.username, comment: comment};
          const response = await db2.findOneAndUpdate({title: title}, {$push: {comments: postComment}});
          const {username, likes, comments, article} = await db2.findOne({title: title})
-        res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString()});
+         const usernameMap = comments.map((temp) => 
+         {
+             if(temp.username)
+             {
+                return temp.username
+             }
+             
+         })
+         const hashMap = await getIconsString(usernameMap)
+        res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString(), hashMap: hashMap});
     })
 
     function checkAuthenticated(req, res, next)
