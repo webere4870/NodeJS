@@ -40,14 +40,41 @@
         $(query).toggle()
     }
 
-    async function query ()
+    async function queryType()
+    {
+        let type = $('#selectedSearch p').text();
+        if(type == "Article")
+        {
+            queryByArticle()
+        }
+        else
+        {
+            queryByUser()
+        }
+    }
+
+    async function queryByArticle()
     {
         let search = document.querySelector('#search')
         let newQuery = await fetch('/search/'+search.value)
         let articlesTemp = await newQuery.json()
         let {data} = articlesTemp
         let articles = data
+        query(articles)
+    }
+
+    async function queryByUser()
+    {
+        let search = document.querySelector('#search')
+        let newQuery = await fetch('/searchUser/'+search.value)
+        let articlesTemp = await newQuery.json()
+        let {data} = articlesTemp
+        let articles = data
         console.log(articles)
+    }
+
+    async function query (articles)
+    {
         let removeArticles = document.querySelectorAll('.articleHolder > a')
         for(let temp of removeArticles)
         {
@@ -116,7 +143,6 @@
             card.appendChild(overLink)
             document.querySelector('#articleHolder').appendChild(card)
         }
-        console.log("shouldnt")
     }
     
     /*

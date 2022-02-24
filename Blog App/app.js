@@ -166,6 +166,13 @@ async function run()
         res.json({success: true, data: response})
     })
 
+    app.get('/searchUser/:search', async (req, res)=>
+    {
+        let {search} = req.params;
+        const response = await db.find({username: {$regex: search}}).toArray()
+        res.json({success: true, data: response})
+    })
+
     app.get('/settings', checkAuthenticated, async (req, res)=>
     {
         const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())});
