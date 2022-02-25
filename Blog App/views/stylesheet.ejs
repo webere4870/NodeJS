@@ -20,8 +20,14 @@
     {
         color: var(--aqua);
     }
+    .hoverable{
+        transition-property: all;
+        transition-duration: .4s;
+        transition-timing-function: ease;
+    }
     .hoverable:hover{
         cursor: pointer;
+        box-shadow: 0 0 10px gray;
     }
     .colFlex
     {
@@ -750,6 +756,39 @@
         transition-duration: .25s;
         transition-timing-function: ease;
         transition-property: all;
+    }
+
+    .userCard
+    {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background: var(--aqua);
+        height: 100px;
+        width: 300px;
+        border-radius: 7px;
+        margin: 15px 0;
+    }
+
+    .userCard p{
+        color: white;
+    }
+
+    .userCard .userIcon
+    {
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        height: 45px;
+        width: 45px;
+    }
+
+    .userIcon i
+    {
+        color: var(--aqua);
     }
     
     #submitBtn:hover

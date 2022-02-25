@@ -6,13 +6,13 @@
         $(evt.currentTarget).attr("id", "selectedSearch")
     })
 
-    document.addEventListener("DOMContentLoaded", (evt)=>
+    /*document.addEventListener("DOMContentLoaded", (evt)=>
     {
         let mySelector = "."+ $('#helper').text().split(" ")[1];
         console.log(mySelector)
         let temp = document.querySelectorAll(mySelector)[0].parentNode
         temp.setAttribute("id", "selectedSquare")
-    })
+    })*/
     async function updateProfile(username)
     {
         let className = $('#selectedSquare > i').attr("class")
@@ -65,12 +65,37 @@
 
     async function queryByUser()
     {
+        
         let search = document.querySelector('#search')
         let newQuery = await fetch('/searchUser/'+search.value)
         let articlesTemp = await newQuery.json()
         let {data} = articlesTemp
-        let articles = data
-        console.log(articles)
+        let users = data
+        let removeArticles = document.querySelectorAll('#grounded > .card')
+        for(let temp of removeArticles)
+        {
+            temp.remove()
+        }
+        console.log(users)
+        for(let temp of users)
+        {
+            let a = document.createElement('a')
+            a.href = "/profile/"+temp.username
+            let userCard = document.createElement('div')
+            userCard.className = "userCard hoverable"
+            let userIcon = document.createElement('div')
+            userIcon.className = "userIcon"
+            let i = document.createElement('i')
+            i.className = temp.icon;
+            userIcon.appendChild(i)
+            userCard.appendChild(userIcon)
+            let p = document.createElement('p')
+            p.href = "/profile/"+temp.username
+            p.textContent = temp.username
+            userCard.appendChild(p)
+            a.appendChild(userCard)
+            document.querySelector('#explore').appendChild(a)
+        }
     }
 
     async function query (articles)
