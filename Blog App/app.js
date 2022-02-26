@@ -15,6 +15,55 @@ app.listen(5000, ()=>
     console.log("Listening on port 5000");
 })
 
+
+const AWS = require('aws-sdk')
+const fs =  require('fs')
+// Enter copied or downloaded access ID and secret key here
+const ID = 'AKIAQC7D3J7NVB3EZMGA';
+const SECRET = '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';
+// The name of the bucket that you have created
+const BUCKET_NAME = 'blogimageswebere4870';
+
+
+AWS.config.update({
+    accessKeyId: ID,
+    secretAccessKey: SECRET
+  });
+
+let s3 = new AWS.S3();
+let filePath = "./wallpaper.png";
+
+let params = {
+    Bucket: BUCKET_NAME,
+    Body : fs.createReadStream(filePath),
+    Key : "folder/"+Date.now()+"_"+path.basename(filePath)
+  };
+
+s3.upload(params, function (err, data) {
+    //handle error
+    if (err) {
+      console.log("Error", err);
+    }
+  
+    //success
+    if (data) {
+      console.log("Uploaded in:", data.Location);
+    }
+})
+
+
+s3.upload(params, function (err, data) {
+    //handle error
+    if (err) {
+      console.log("Error", err);
+    }
+  
+    //success
+    if (data) {
+      console.log("Uploaded in:", data.Location);
+    }
+});
+
 // EJS
 const expressLayouts = require('express-ejs-layouts');
 

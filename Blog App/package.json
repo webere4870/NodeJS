@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1082.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^14.2.0",
     "ejs": "^3.1.6",
