@@ -19,11 +19,7 @@ app.listen(5000, ()=>
 const AWS = require('aws-sdk')
 const fs =  require('fs')
 // Enter copied or downloaded access ID and secret key here
-const ID = 'AKIAQC7D3J7NVB3EZMGA';
-const SECRET = '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';
-// The name of the bucket that you have created
-const BUCKET_NAME = 'blogimageswebere4870';
-
+const {ID, SECRET, BUCKET_NAME} = require('./s3bucket.js')
 
 AWS.config.update({
     accessKeyId: ID,
