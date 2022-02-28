@@ -16,49 +16,24 @@ app.listen(5000, ()=>
 })
 
 
-const AWS = require('aws-sdk')
+// AWS/S3 image upload libraries
+const S3 = require('aws-sdk/clients/s3')
 const fs =  require('fs')
-// Enter copied or downloaded access ID and secret key here
-const {ID, SECRET, BUCKET_NAME} = require('./s3bucket.js')
+const multer = require('multer')
+const upload = multer({dest: 'uploads/'})
+const region = process.env.AWS_REGION;
+const accessKeyId = process.env.AWS_ID;
+const secretAccessKey = process.env.SECRET;
+const bucketName = process.env.BUCKET_NAME;
 
-AWS.config.update({
-    accessKeyId: ID,
-    secretAccessKey: SECRET
-  });
-
-let s3 = new AWS.S3();
-let filePath = "./wallpaper.png";
-
-let params = {
-    Bucket: BUCKET_NAME,
-    Body : fs.createReadStream(filePath),
-    Key : "folder/"+Date.now()+"_"+path.basename(filePath)
-  };
-
-s3.upload(params, function (err, data) {
-    //handle error
-    if (err) {
-      console.log("Error", err);
-    }
-  
-    //success
-    if (data) {
-      console.log("Uploaded in:", data.Location);
-    }
+// New instance of the S3 bucket
+const s3 = new S3({
+    region,
+    accessKeyId,
+    secretAccessKey
 })
 
 
-s3.upload(params, function (err, data) {
-    //handle error
-    if (err) {
-      console.log("Error", err);
-    }
-  
-    //success
-    if (data) {
-      console.log("Uploaded in:", data.Location);
-    }
-});
 
 // EJS
 const expressLayouts = require('express-ejs-layouts');
@@ -143,6 +118,26 @@ async function run()
         const articles = await db2.find({username: {$in: following}}).toArray();
         let hashMap = await getIcons(articles);
         res.render('index', {articles: articles, hashMap: hashMap});
+    })
+
+    app.get('/profile/:key', async (req, res)=>
+    {
+        
+    })
+
+    app.post('/profile/image', upload.single('avatar'), async (req, res)=>
+    {
+        const file = req.file
+        const fileStream = fs.createReadStream(file.path)
+        const uploadParams = 
+        {
+            Bucket: bucketName,
+            Body: fileStream,
+            Key: file.filename
+        }
+        let response = await s3.upload(uploadParams);
+        console.log(response)
+        res.render('register')
     })
 
     async function getIcons(articles)

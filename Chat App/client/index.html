@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <style>
+        .rowFlex{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .colFlex
+        {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <form id="form">
+        <div class="rowFlex">
+            <label for="messages">Chat</label>
+            <div id="messages" name="messages" style="height: 400px; width: 400px;" readonly></div>
+        </div>
+        <div class="rowFlex">
+            <label for="message">Message</label>
+            <input type="text" id="message" name="message">
+            <button type="submit">Send</button>
+        </div>
+        <div class="rowFlex">
+            <label for="room">Room</label>
+            <input type="text" id="room" name="room">
+            <button type="button" id="roomSubmit">Join</button>
+        </div>
+    </form>
+    <script src="./script.js">
+    
+    </script>
+</body>
+</html>
