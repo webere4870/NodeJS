@@ -23,8 +23,8 @@ const multer = require('multer')
 const upload = multer({dest: 'uploads/'})
 const region = process.env.AWS_REGION;
 const accessKeyId = process.env.AWS_ID;
-const secretAccessKey = process.env.SECRET;
-const bucketName = process.env.BUCKET_NAME;
+const secretAccessKey = process.env.AWS_SECRET;
+const bucketName = process.env.AWS_BUCKET_NAME;
 
 // New instance of the S3 bucket
 const s3 = new S3({
@@ -120,14 +120,16 @@ async function run()
         res.render('index', {articles: articles, hashMap: hashMap});
     })
 
-    app.get('/profile/:key', async (req, res)=>
-    {
-        
-    })
-
     app.post('/profile/image', upload.single('avatar'), async (req, res)=>
     {
         const file = req.file
+        const {key} = await uploadFile(file)
+        const changeDB = await db.updateOne({"_id": ObjectId(req.session.passport.user.toString())}, {$set: {img: key}})
+        res.render('register')
+    })
+
+    function uploadFile(file)
+    {
         const fileStream = fs.createReadStream(file.path)
         const uploadParams = 
         {
@@ -135,10 +137,8 @@ async function run()
             Body: fileStream,
             Key: file.filename
         }
-        let response = await s3.upload(uploadParams);
-        console.log(response)
-        res.render('register')
-    })
+        return s3.upload(uploadParams).promise();
+    }
 
     async function getIcons(articles)
     {
@@ -253,7 +253,7 @@ async function run()
         {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
             const {first, last, email, username} = req.body
-            const newUser = {username: username, first: first, last: last, email: email, password: hashedPassword, followers: [], following: [], biography: "", icon: "bi bi-robot", color: "#0099ff"}
+            const newUser = {username: username, first: first, last: last, email: email, password: hashedPassword, followers: [], following: [], biography: "", icon: "bi bi-robot", color: "#0099ff", img: ""}
             await db.insertOne(newUser)
             res.redirect('login')
         }

@@ -6,6 +6,11 @@
         <h1>Biography</h1>
         <textarea name="biography" id="biography" cols="30" rows="10"><%= biography %></textarea>
     </div>
+    <form action="/profile/image" method="post" enctype="multipart/form-data" style="z-index: 100;">
+        <h1>Profile Picture</h1>
+        <input type="file" name="avatar">
+        <input type="submit" value="Upload">
+    </form>
     <div class="grid colFlex">
         <p style="display: none;" id="helper"><%= icon %></p>
         <h1>Icon</h1>
