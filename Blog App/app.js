@@ -122,10 +122,20 @@ async function run()
 
     app.post('/profile/image', upload.single('avatar'), async (req, res)=>
     {
+        let user = await db.findOne({'_id': ObjectId(req.session.passport.user)})
+        let img = user.img
+        if(img)
+        {
+            await deleteFile(img)
+        }
         const file = req.file
         const {key} = await uploadFile(file)
-        const changeDB = await db.updateOne({"_id": ObjectId(req.session.passport.user.toString())}, {$set: {img: key}})
-        res.render('register')
+        await db.updateOne({"_id": ObjectId(req.session.passport.user.toString())}, {$set: {img: key}})
+        let articles = await db2.find({username: user.username}).toArray()
+        let hashMap = await getIcons(articles);
+        let followersHash = await getIconsString(user.followers)
+        let followingHash = await getIconsString(user.following)
+        res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash})
     })
 
     function uploadFile(file)
@@ -138,6 +148,14 @@ async function run()
             Key: file.filename
         }
         return s3.upload(uploadParams).promise();
+    }
+
+    function deleteFile(file)
+    {
+        return s3.deleteObject({
+            Bucket: bucketName,
+            Key: file
+           }).promise()
     }
 
     async function getIcons(articles)
