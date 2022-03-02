@@ -171,13 +171,14 @@ async function run()
         {
             if(keyList[counter].img)
             {
-                //imageList.push(await arrayKeyList(keyList[counter].img))
+                /*//imageList.push(await arrayKeyList(keyList[counter].img))
                 const {Body} = await arrayKeyList(keyList[counter].img)
                 
                 const b64 = Buffer.from(Body).toString('base64');
                 // CHANGE THIS IF THE IMAGE YOU ARE WORKING WITH IS .jpg OR WHATEVER
                 const mimeType = 'image/png';
-                imageList.push({username: keyList[counter].username, Body: b64, mimeType: mimeType})
+                imageList.push({username: keyList[counter].username, Body: b64, mimeType: mimeType})*/
+                imageList.push(await arrayKeyList(keyList[counter].img))
             }
         }
 
@@ -333,11 +334,27 @@ async function run()
         let hashMap = await getIcons(articles);
         let followersHash = await getIconsString(user.followers)
         let followingHash = await getIconsString(user.following)
-        let imageList = await getKeyList(followersHash);
-        res.send(`<img src="data:image/png; ${imageList[0].Body}" />`)
+        //let imageList = await getKeyList(followersHash);
+        getKeyList(followersHash)
+        .then((img)=>{
+        let image="<img src='data:image/jpeg;base64," + encode(img[0].Body) + "'" + "/>";
+        let startHTML="<html><body></body>";
+        let endHTML="</body></html>";
+        let html=startHTML + image + endHTML;
+        res.send(html)
+        }).catch((e)=>{
+                res.send(e)
+        })
+        // res.send(`<img src="data:image/png; ${imageList[0].Body}" />`)
         
         //res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash})
     })
+
+    function encode(data){
+        let buf = Buffer.from(data);
+        let base64 = buf.toString('base64');
+        return base64
+        }
 
     app.get('/profile', checkAuthenticated, async (req, res)=>
     {
