@@ -158,6 +158,42 @@ async function run()
            }).promise()
     }
 
+    async function getKeyList(users)
+    {
+        let userList = users.map((temp)=> temp.username)
+        let fullList = await db.find({username: {$in: userList}}).toArray()
+        let keyList = fullList.map((temp)=> {
+            return {username: temp.username, img: temp.img}
+        })
+        let imageList = [];
+
+        for(let counter = 0; counter < keyList.length; counter++)
+        {
+            if(keyList[counter].img)
+            {
+                //imageList.push(await arrayKeyList(keyList[counter].img))
+                const {Body} = await arrayKeyList(keyList[counter].img)
+                
+                const b64 = Buffer.from(Body).toString('base64');
+                // CHANGE THIS IF THE IMAGE YOU ARE WORKING WITH IS .jpg OR WHATEVER
+                const mimeType = 'image/png';
+                imageList.push({username: keyList[counter].username, Body: b64, mimeType: mimeType})
+            }
+        }
+
+        return imageList;
+    }
+
+    function arrayKeyList(key)
+    {
+        let params = {
+            Bucket: bucketName, 
+            Key: key
+        }
+        return s3.getObject(params).promise()
+    }
+
+
     async function getIcons(articles)
     {
         let usernameList = [];
@@ -297,7 +333,10 @@ async function run()
         let hashMap = await getIcons(articles);
         let followersHash = await getIconsString(user.followers)
         let followingHash = await getIconsString(user.following)
-        res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash})
+        let imageList = await getKeyList(followersHash);
+        res.send(`<img src="data:image/png; ${imageList[0].Body}" />`)
+        
+        //res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash})
     })
 
     app.get('/profile', checkAuthenticated, async (req, res)=>
