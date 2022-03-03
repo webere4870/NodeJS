@@ -130,7 +130,7 @@ async function run()
         }
         const file = req.file
         const {key} = await uploadFile(file)
-        await db.updateOne({"_id": ObjectId(req.session.passport.user.toString())}, {$set: {img: key}})
+        await db.updateOne({"_id": ObjectId(req.session.passport.user.toString())}, {$set: {img: key, mimetype: file.mimetype}})
         let articles = await db2.find({username: user.username}).toArray()
         let hashMap = await getIcons(articles);
         let followersHash = await getIconsString(user.followers)
@@ -163,7 +163,8 @@ async function run()
         let userList = users.map((temp)=> temp.username)
         let fullList = await db.find({username: {$in: userList}}).toArray()
         let keyList = fullList.map((temp)=> {
-            return {username: temp.username, img: temp.img}
+            return {username: temp.username, img: temp.img, mimetype: temp.mimetype}
+
         })
         let imageList = [];
 
@@ -178,10 +179,9 @@ async function run()
                 // CHANGE THIS IF THE IMAGE YOU ARE WORKING WITH IS .jpg OR WHATEVER
                 const mimeType = 'image/png';
                 imageList.push({username: keyList[counter].username, Body: b64, mimeType: mimeType})*/
-                imageList.push(await arrayKeyList(keyList[counter].img))
+                imageList.push({username: keyList[counter].username, mimetype: keyList[counter].mimetype, data: await arrayKeyList(keyList[counter].img)})
             }
         }
-
         return imageList;
     }
 
@@ -308,7 +308,7 @@ async function run()
         {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
             const {first, last, email, username} = req.body
-            const newUser = {username: username, first: first, last: last, email: email, password: hashedPassword, followers: [], following: [], biography: "", icon: "bi bi-robot", color: "#0099ff", img: ""}
+            const newUser = {username: username, first: first, last: last, email: email, password: hashedPassword, followers: [], following: [], biography: "", icon: "bi bi-robot", color: "#0099ff", img: "", mimetype: ""}
             await db.insertOne(newUser)
             res.redirect('login')
         }
@@ -334,20 +334,28 @@ async function run()
         let hashMap = await getIcons(articles);
         let followersHash = await getIconsString(user.followers)
         let followingHash = await getIconsString(user.following)
+        let finalImgList = [];
         //let imageList = await getKeyList(followersHash);
         getKeyList(followersHash)
         .then((img)=>{
-        let image="<img src='data:image/jpeg;base64," + encode(img[0].Body) + "'" + "/>";
+            finalImgList = img.map((tempImg)=>
+            {
+                console.log({username: tempImg.username, mimetype: tempImg.mimetype})
+                return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
+                
+            })
+            res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList})
+        /*let image="<img src='data:image/jpeg;base64," + encode(img[0].Body) + "'" + "/>";
         let startHTML="<html><body></body>";
         let endHTML="</body></html>";
-        let html=startHTML + image + endHTML;
-        res.send(html)
-        }).catch((e)=>{
-                res.send(e)
+        let html=startHTML + image + endHTML;*/
+        // res.send(html)
+        // }).catch((e)=>{
+        //         res.send(e)
+        // })
         })
         // res.send(`<img src="data:image/png; ${imageList[0].Body}" />`)
         
-        //res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash})
     })
 
     function encode(data){

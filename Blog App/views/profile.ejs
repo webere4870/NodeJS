@@ -1,6 +1,8 @@
 <%- include('./navigation') %> 
 <%- include('./logout') %> 
-
+<% if(profilePicData){ %>
+    <img style="height: 100px; width: 100px;" src='data:<%= profilePicData[0].mimetype %>;base64,<%= profilePicData[0].b64%>'/>
+<%} %>
 <div id="followers" style="display: none;" class="engagementCard hide">
     <div class="profileSubCard">
     <% if(typeof user.followers.length != 'undefined') {%> 
@@ -14,9 +16,10 @@
             <% } %> 
 
             <% if(followersHash.length > 0) { %>
-                
+                <% console.log(profilePicData) %>
                 <div class="rowFlex" style="margin: 10px 0;">
                 <div class="profilePicture followPic" style="margin: 0 10px;">
+                
                     <i class="<%=followersHash[iconIndex].icon%>"></i>
                 </div><a href="/profile/<%= user.followers[counter]%>"><%= user.followers[counter]%></a>
                 </div>   
