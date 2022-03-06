@@ -4,19 +4,18 @@
     <div class="profileSubCard">
     <% if(typeof user.followers.length != 'undefined') {%> 
         <% for(let counter = 0; counter < user.followers.length; counter++) {%> 
+            
             <% let iconIndex = 0; let valid = false; let i = 0;%> 
             <% for(let j = 0; j < profilePicData.length; j++) {%>
-                <% if(profilePicData[j].username == user.followers[counter]) {
-                    iconIndex = i;
-               } %>
-               <% i++%> 
+            <% if(profilePicData[j].username == user.followers[counter]){
+                                iconIndex = j;
+            } %>
+            <% i++%> 
             <% } %> 
 
             <% if(followersHash.length > 0) { %>
                 <div class="rowFlex" style="margin: 10px 0;">
-                    <%if(profilePicData) { %>
-                        <img class="profilePicture1" src='data:<%= profilePicData[iconIndex].mimetype %>;base64,<%= profilePicData[iconIndex].b64%>'/>
-                    <% } %>
+                    <img class="profilePicture1" src='data:<%= profilePicData[iconIndex].mimetype %>;base64,<%= profilePicData[iconIndex].b64%>'/>
                 
                 <a href="/profile/<%= user.followers[counter]%>"><%= user.followers[counter]%></a>
                 </div>   
@@ -35,19 +34,16 @@
     <% if(typeof user.following.length != 'undefined') {%> 
         <% for(let counter = 0; counter < user.following.length; counter++) {%> 
             <% let iconIndex = 0; let valid = false; let i = 0;%> 
-            <% for(let j = 0; j < followingHash.length; j++) {%>
-                <% if(followingHash[j].username == user.following[counter]) {
-                    iconIndex = i;
-               } %>
-               <% i++%> 
+            <% for(let j = 0; j < profilePicData.length; j++) {%>
+            <% if(profilePicData[j].username == user.followers[counter]){
+                                iconIndex = j;
+            } %>
+            <% i++%> 
             <% } %> 
-
             <% if(followingHash.length > 0) { %>
                 
                 <div class="rowFlex" style="margin: 10px 0;">
-                    <%if(profilePicData) { %>
-                        <img class="profilePicture1" src='data:<%= profilePicData[iconIndex].mimetype %>;base64,<%= profilePicData[iconIndex].b64%>'/>
-                    <% } %>
+                    <img class="profilePicture1" src='data:<%= profilePicData[iconIndex].mimetype %>;base64,<%= profilePicData[iconIndex].b64%>'/>
                     <a href="/profile/<%= user.following[counter]%>"><%= user.following[counter]%></a>
                 </div>   
            <% }%>
