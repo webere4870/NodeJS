@@ -1,27 +1,24 @@
 <%- include('./navigation') %> 
 <%- include('./logout') %> 
-<% if(profilePicData){ %>
-    <img style="height: 100px; width: 100px;" src='data:<%= profilePicData[0].mimetype %>;base64,<%= profilePicData[0].b64%>'/>
-<%} %>
 <div id="followers" style="display: none;" class="engagementCard hide">
     <div class="profileSubCard">
     <% if(typeof user.followers.length != 'undefined') {%> 
         <% for(let counter = 0; counter < user.followers.length; counter++) {%> 
             <% let iconIndex = 0; let valid = false; let i = 0;%> 
-            <% for(let j = 0; j < followersHash.length; j++) {%>
-                <% if(followersHash[j].username == user.followers[counter]) {
+            <% for(let j = 0; j < profilePicData.length; j++) {%>
+                <% if(profilePicData[j].username == user.followers[counter]) {
                     iconIndex = i;
                } %>
                <% i++%> 
             <% } %> 
 
             <% if(followersHash.length > 0) { %>
-                <% console.log(profilePicData) %>
                 <div class="rowFlex" style="margin: 10px 0;">
-                <div class="profilePicture followPic" style="margin: 0 10px;">
+                    <%if(profilePicData) { %>
+                        <img class="profilePicture1" src='data:<%= profilePicData[iconIndex].mimetype %>;base64,<%= profilePicData[iconIndex].b64%>'/>
+                    <% } %>
                 
-                    <i class="<%=followersHash[iconIndex].icon%>"></i>
-                </div><a href="/profile/<%= user.followers[counter]%>"><%= user.followers[counter]%></a>
+                <a href="/profile/<%= user.followers[counter]%>"><%= user.followers[counter]%></a>
                 </div>   
            <% }%> 
         <%  }%> 
@@ -48,9 +45,10 @@
             <% if(followingHash.length > 0) { %>
                 
                 <div class="rowFlex" style="margin: 10px 0;">
-                <div class="profilePicture followPic" style="margin: 0 10px;">
-                    <i class="<%=followingHash[iconIndex].icon%>"></i>
-                </div><a href="/profile/<%= user.following[counter]%>"><%= user.following[counter]%></a>
+                    <%if(profilePicData) { %>
+                        <img class="profilePicture1" src='data:<%= profilePicData[iconIndex].mimetype %>;base64,<%= profilePicData[iconIndex].b64%>'/>
+                    <% } %>
+                    <a href="/profile/<%= user.following[counter]%>"><%= user.following[counter]%></a>
                 </div>   
            <% }%>
         <%  }%> 
@@ -61,7 +59,7 @@
     </div> 
 </div>
 <div class="colFlex">
-    <%- include('./profilepic') %> 
+    <img class="profilePicture1" style="width: 100px; height: 100px;" src='data:<%= userPic.mimetype %>;base64,<%= userPic.b64%>'/>
     <h1><%= user.first%> <%= user.last %></h1>
     <div class="rowFlex" style="margin-bottom: 20px;">
         <div>

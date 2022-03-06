@@ -163,6 +163,7 @@ async function run()
         let userList = users.map((temp)=> temp.username)
         let fullList = await db.find({username: {$in: userList}}).toArray()
         let keyList = fullList.map((temp)=> {
+            console.log(temp.username, temp.mimetype)
             return {username: temp.username, img: temp.img, mimetype: temp.mimetype}
 
         })
@@ -183,6 +184,17 @@ async function run()
             }
         }
         return imageList;
+    }
+
+    function getUserProfilePic(singleUserKey)
+    {
+        let params = 
+        {
+            Bucket: bucketName,
+            Key: singleUserKey
+        }
+
+        return s3.getObject(params).promise()
     }
 
     function arrayKeyList(key)
@@ -335,27 +347,46 @@ async function run()
         let followersHash = await getIconsString(user.followers)
         let followingHash = await getIconsString(user.following)
         let finalImgList = [];
-        //let imageList = await getKeyList(followersHash);
         getKeyList(followersHash)
         .then((img)=>{
+            console.log(img)
             finalImgList = img.map((tempImg)=>
             {
-                console.log({username: tempImg.username, mimetype: tempImg.mimetype})
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
-                
             })
             res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList})
-        /*let image="<img src='data:image/jpeg;base64," + encode(img[0].Body) + "'" + "/>";
-        let startHTML="<html><body></body>";
-        let endHTML="</body></html>";
-        let html=startHTML + image + endHTML;*/
-        // res.send(html)
-        // }).catch((e)=>{
-        //         res.send(e)
-        // })
         })
-        // res.send(`<img src="data:image/png; ${imageList[0].Body}" />`)
         
+    })
+    app.get('/profile', checkAuthenticated, async (req, res)=>
+    {
+        const user = await db.findOne({'_id': ObjectId(req.session.passport.user)});
+        let articles = await db2.find({username: user.username}).toArray()
+        let hashMap = await getIcons(articles);
+        let followersHash = await getIconsString(user.followers)
+        let followingHash = await getIconsString(user.following)
+        let totalList = followersHash.concat(followingHash)
+        let tempUserPic = await getUserProfilePic(user.img)
+        let userPic = {mimetype: user.mimetype, b64: encode(tempUserPic.Body)}
+        let finalImgList = [];
+        getKeyList(totalList)
+        .then((img)=>{
+            console.log(img)
+            finalImgList = img.map((tempImg)=>
+            {
+                return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
+            })
+            res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList, userPic: userPic})
+        })
+        
+        /*let finalImgList = totalHashData.map((tempImg)=>
+        {
+            return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
+        })*/
+        
+
+       /* res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash})
+        */
     })
 
     function encode(data){
@@ -363,16 +394,6 @@ async function run()
         let base64 = buf.toString('base64');
         return base64
         }
-
-    app.get('/profile', checkAuthenticated, async (req, res)=>
-    {
-        let user = await db.findOne({'_id': ObjectId(req.session.passport.user)})
-        let articles = await db2.find({username: user.username}).toArray()
-        let hashMap = await getIcons(articles);
-        let followersHash = await getIconsString(user.followers)
-        let followingHash = await getIconsString(user.following)
-        res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash})
-    })
 
     app.post('/profile/settings', async (req, res) =>
     {
