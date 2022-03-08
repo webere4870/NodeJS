@@ -120,7 +120,7 @@ async function run()
         res.render('index', {articles: articles, hashMap: hashMap});
     })
 
-    app.post('/profile/image', upload.single('avatar'), async (req, res)=>
+    app.post('/profile/image', checkAuthenticated, upload.single('avatar'), async (req, res)=>
     {
         let user = await db.findOne({'_id': ObjectId(req.session.passport.user)})
         let img = user.img
@@ -131,11 +131,26 @@ async function run()
         const file = req.file
         const {key} = await uploadFile(file)
         await db.updateOne({"_id": ObjectId(req.session.passport.user.toString())}, {$set: {img: key, mimetype: file.mimetype}})
+        user = await db.findOne({'_id': ObjectId(req.session.passport.user)})
         let articles = await db2.find({username: user.username}).toArray()
         let hashMap = await getIcons(articles);
         let followersHash = await getIconsString(user.followers)
         let followingHash = await getIconsString(user.following)
-        res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash})
+        let totalList = followersHash.concat(followingHash)
+        let tempUserPic = await getUserProfilePic(user.img)
+        let userPic = {username: user.username, mimetype: user.mimetype, b64: encode(tempUserPic.Body)}
+        
+        let finalImgList = [];
+        getKeyList(totalList)
+        .then((img)=>{
+            console.log(img)
+            finalImgList = img.map((tempImg)=>
+            {
+                return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
+            })
+            finalImgList.push(userPic)
+            res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList, userPic: userPic})
+        })
     })
 
     function uploadFile(file)
@@ -346,6 +361,8 @@ async function run()
         let hashMap = await getIcons(articles);
         let followersHash = await getIconsString(user.followers)
         let followingHash = await getIconsString(user.following)
+        let tempUserPic = await getUserProfilePic(user.img)
+        let userPic = {mimetype: user.mimetype, b64: encode(tempUserPic.Body)}
         let finalImgList = [];
         getKeyList(followersHash)
         .then((img)=>{
@@ -354,7 +371,7 @@ async function run()
             {
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
             })
-            res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList})
+            res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList, userPic: userPic})
         })
         
     })
