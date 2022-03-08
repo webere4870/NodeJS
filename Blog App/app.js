@@ -116,8 +116,20 @@ async function run()
     {
         const {following} = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
         const articles = await db2.find({username: {$in: following}}).toArray();
-        let hashMap = await getIcons(articles);
-        res.render('index', {articles: articles, hashMap: hashMap});
+        let finalImgList = [];
+        let objectFollowing = following.map((temp)=>
+        {
+            return {username: temp}
+        })
+        getKeyList(objectFollowing)
+        .then((img)=>{
+            console.log(img)
+            finalImgList = img.map((tempImg)=>
+            {
+                return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
+            })
+            res.render('index', {articles: articles, profilePicData: finalImgList})
+        })
     })
 
     app.post('/profile/image', checkAuthenticated, upload.single('avatar'), async (req, res)=>
@@ -139,7 +151,7 @@ async function run()
         let totalList = followersHash.concat(followingHash)
         let tempUserPic = await getUserProfilePic(user.img)
         let userPic = {username: user.username, mimetype: user.mimetype, b64: encode(tempUserPic.Body)}
-        
+        console.log(totalList)
         let finalImgList = [];
         getKeyList(totalList)
         .then((img)=>{
@@ -175,6 +187,7 @@ async function run()
 
     async function getKeyList(users)
     {
+        console.log(users, "users")
         let userList = users.map((temp)=> temp.username)
         let fullList = await db.find({username: {$in: userList}}).toArray()
         let keyList = fullList.map((temp)=> {
@@ -254,16 +267,39 @@ async function run()
     {
         if(req.session.passport)
         {
-            const user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
             const articles = await db2.find().toArray();
-            let hashMap = await getIcons(articles)
-            res.render('explore', {name: `${user.first} ${user.last}`, articles: articles, hashMap: hashMap})
+            let finalImgList = [];
+            let objectFollowing = articles.map((temp)=>
+            {
+                return {username: temp.username}
+            })
+            getKeyList(objectFollowing)
+            .then((img)=>{
+            console.log(img)
+            finalImgList = img.map((tempImg)=>
+            {
+                return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
+            })
+            res.render('explore', {articles: articles, profilePicData: finalImgList})
+        })
         }
         else
         {
             const articles = await db2.find().toArray();
-            let hashMap = await getIcons(articles)
-            res.render('explore', {articles: articles, hashMap: hashMap})
+            let finalImgList = [];
+            let objectFollowing = articles.map((temp)=>
+            {
+                return {username: temp.username}
+            })
+            getKeyList(objectFollowing)
+            .then((img)=>{
+            console.log(img)
+            finalImgList = img.map((tempImg)=>
+            {
+                return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
+            })
+            res.render('explore', {articles: articles, profilePicData: finalImgList})
+        })
         }
     })
 
@@ -361,16 +397,18 @@ async function run()
         let hashMap = await getIcons(articles);
         let followersHash = await getIconsString(user.followers)
         let followingHash = await getIconsString(user.following)
+        let totalList = followersHash.concat(followingHash)
         let tempUserPic = await getUserProfilePic(user.img)
-        let userPic = {mimetype: user.mimetype, b64: encode(tempUserPic.Body)}
+        let userPic = {username: user.username, mimetype: user.mimetype, b64: encode(tempUserPic.Body)}
         let finalImgList = [];
-        getKeyList(followersHash)
+        getKeyList(totalList)
         .then((img)=>{
             console.log(img)
             finalImgList = img.map((tempImg)=>
             {
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
             })
+            finalImgList.push(userPic)
             res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList, userPic: userPic})
         })
         
@@ -384,7 +422,7 @@ async function run()
         let followingHash = await getIconsString(user.following)
         let totalList = followersHash.concat(followingHash)
         let tempUserPic = await getUserProfilePic(user.img)
-        let userPic = {mimetype: user.mimetype, b64: encode(tempUserPic.Body)}
+        let userPic = {username: user.username, mimetype: user.mimetype, b64: encode(tempUserPic.Body)}
         let finalImgList = [];
         getKeyList(totalList)
         .then((img)=>{
@@ -393,6 +431,7 @@ async function run()
             {
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
             })
+            finalImgList.push(userPic)
             res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList, userPic: userPic})
         })
         
