@@ -616,6 +616,38 @@
         justify-content: center;
         align-items: center;
         margin: 20px 0 40px 0;
+        position: relative;
+    }
+
+    #dropBox
+    {
+        position: absolute;
+        display: none;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+        box-shadow: 0 0 15px gray;
+        border-radius: 10px;
+        height: 300px;
+        top: 100%;
+        left: 0;
+        z-index: 5;
+        background: var(--main-white);
+    }
+
+    #dropBox h1{
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 20px;
+    }
+
+    #searchSelect
+    {
+        text-underline-offset: 5px;
+        text-decoration: underline;
+        text-decoration-color: rgb(199, 199, 199);
+        text-decoration-thickness: 3px;
     }
     
     .searchOptions

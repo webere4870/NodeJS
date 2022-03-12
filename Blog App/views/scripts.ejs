@@ -1,5 +1,34 @@
 <script>
 
+    $('#search').focus(()=>
+    {
+        $("#dropBox").slideDown(250)
+    })
+
+    $('#dropBox .closeBtn').click(()=>
+    {
+        $('#dropBox').slideUp(500)
+    })
+    
+
+    $('#search').on('input', ()=>
+    {
+        console.log("here")
+    })
+
+    $('#dropBox h1').click((evt)=>
+    {
+        $("#searchSelect").attr("id", "")
+        $(evt.currentTarget).attr("id", "searchSelect")
+    })
+
+    // $('#search').click((evt)=>
+    // {
+    //     let h1 = document.createElement('h1')
+    //     h1.textContent = "gay"
+    //     document.querySelector('#searchBox').append(h1)
+    // })
+
     $('.searchOptions').click((evt)=>
     {
         $('#selectedSearch').attr("id", "");
@@ -42,8 +71,8 @@
 
     async function queryType()
     {
-        let type = $('#selectedSearch p').text();
-        if(type == "Article")
+        let type = $('#searchSelect').text();
+        if(type == "Articles")
         {
             queryByArticle()
         }
@@ -57,10 +86,16 @@
     {
         let search = document.querySelector('#search')
         let newQuery = await fetch('/search/'+search.value)
-        let articlesTemp = await newQuery.json()
-        let {data} = articlesTemp
-        let articles = data
-        query(articles)
+        let {data} = await newQuery.json()
+        let parent = document.querySelector('#dropBox')
+        for(let temp of data)
+        {
+            console.log(temp)
+            let img = document.createElement('img')
+            img.className = "profilePicture1"
+            img.src=`data:${temp.mimetype};base64,${temp.b64}`;
+            parent.append(img)
+        }
     }
 
     async function queryByUser()
@@ -68,7 +103,9 @@
         
         let search = document.querySelector('#search')
         let newQuery = await fetch('/searchUser/'+search.value)
-        let articlesTemp = await newQuery.json()
+        let userTemp = await newQuery.json()
+        console.log(userTemp)
+        /*
         let {data} = articlesTemp
         let users = data
         let removeArticles = document.querySelectorAll('#grounded > .card')
@@ -96,8 +133,9 @@
             a.appendChild(userCard)
             document.querySelector('#explore').appendChild(a)
         }
+        */
     }
-
+    /*
     async function query (articles)
     {
         let removeArticles = document.querySelectorAll('.articleHolder > a')
@@ -168,7 +206,8 @@
             card.appendChild(overLink)
             document.querySelector('#articleHolder').appendChild(card)
         }
-    }
+    } 
+    */
     
     /*
     async function query ()

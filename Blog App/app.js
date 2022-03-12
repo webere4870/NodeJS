@@ -201,13 +201,6 @@ async function run()
         {
             if(keyList[counter].img)
             {
-                /*//imageList.push(await arrayKeyList(keyList[counter].img))
-                const {Body} = await arrayKeyList(keyList[counter].img)
-                
-                const b64 = Buffer.from(Body).toString('base64');
-                // CHANGE THIS IF THE IMAGE YOU ARE WORKING WITH IS .jpg OR WHATEVER
-                const mimeType = 'image/png';
-                imageList.push({username: keyList[counter].username, Body: b64, mimeType: mimeType})*/
                 imageList.push({username: keyList[counter].username, mimetype: keyList[counter].mimetype, data: await arrayKeyList(keyList[counter].img)})
             }
         }
@@ -321,8 +314,32 @@ async function run()
     {
         let {search} = req.params;
         const response = await db2.find({article: {$regex: search}}).toArray()
-        res.json({success: true, data: response})
+        let usernameOnly = response.map((temp)=> temp.username)
+        let usernameAndTitle = response.map((temp)=>
+        {
+            return {username: temp.username, title: temp.title}
+        })
+        const userData = await db.find({username: {$in: usernameOnly}}).toArray()
+        let imageAndMimeType = userData.map((temp)=>
+        {
+            return {username: temp.username, img: temp.img, mimetype: temp.mimetype}
+        })
+        console.log(imageAndMimeType)
+        for(let temp of imageAndMimeType)
+        {
+            let s3Data = await getUserProfilePic(temp.img)
+            console.log(s3Data)
+            temp.b64 = encode(s3Data.Body)
+        }
+        for(let temp of usernameAndTitle)
+        {
+            let joinIndex = imageAndMimeType.findIndex((i)=> i.username == temp.username);
+            temp.b64 = imageAndMimeType[joinIndex].b64
+            temp.mimetype = imageAndMimeType[joinIndex].mimetype
+        }
+        res.json({success: true, data: usernameAndTitle})
     })
+
 
     app.get('/searchUser/:search', async (req, res)=>
     {
