@@ -5,22 +5,11 @@
         </div>
         <div id="cardComments">
             <% if(comments) {%> 
-                <% console.log(hashMap, "trying") %> 
             <% for(let counter = 0; counter < comments.length; counter++){ %> 
-                <% let iconIndex = 0; %> 
                 <div class="userComment blueComment" >
                     <a href="/profile/<%= comments[counter].username %> ">
+                        <img class="profilePicture2" src='data:<%= comments[counter].mimetype %>;base64,<%= comments[counter].b64%>'/>
                         <h3><%= comments[counter].username %></h3>
-                        <% for(let i = 0; i < hashMap.length; i++) {%> 
-                            <% if(hashMap[i].username == comments[counter].username) {%>
-                                <% iconIndex = i; %> 
-                                <% } %> 
-                        <% } %> 
-                        <div class="profilePicture commentPic">
-                            <% if(hashMap.length > 0) {%> 
-                            <i class="<%= hashMap[iconIndex].icon %>"></i>
-                            <% } %> 
-                        </div>
                     </a>
                     <p style="padding: 0; margin: 0;"><%= comments[counter].comment %> </p>
                 </div>

@@ -354,20 +354,34 @@ async function run()
     app.get('/article/:page', async (req, res)=>
     {
         const page = req.params.page;
-        const {title, username, likes, comments, article} = await db2.findOne({title: page})
-        let commentsArr = comments.map((temp)=>
+        const article = await db2.findOne({title: page})
+
+        let commentsArr = article.comments.map((temp)=>
         {
             return temp.username
         })
-        let userIcons = await db.find({username: {$in: commentsArr}}).toArray()
-        let hashMap = await getIcons(userIcons);
+
+        let allPossibleUsers = await db.find({username: {$in: commentsArr}}).toArray()
+
+        for(let temp of article.comments)
+        {
+            let commentIndex = allPossibleUsers.findIndex((tempe) =>
+            {
+                return tempe.username === temp.username
+            })
+            let s3data = await getUserProfilePic(allPossibleUsers[commentIndex].img)
+            let b64 = encode(s3data.Body);
+            temp.mimetype = allPossibleUsers[commentIndex].mimetype;
+            temp.b64 = b64;
+        }
+
         if(req.session.passport)
         {
-            res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString(), hashMap: hashMap});
+            res.render('article', article);
         }
         else
         {
-            res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article,  hashMap: hashMap});
+            
         }
     })
 
@@ -504,20 +518,17 @@ async function run()
     app.post('/newComment/', async (req, res)=>
     {
         let {comment, title} = req.body
-        const user1 = await db.findOne({'_id': ObjectId(req.session.passport.user)});
-        const postComment = { _id: ObjectId(req.session.passport.user), username: user1.username, comment: comment};
-         const response = await db2.findOneAndUpdate({title: title}, {$push: {comments: postComment}});
-         const {username, likes, comments, article} = await db2.findOne({title: title})
-         const usernameMap = comments.map((temp) => 
-         {
-             if(temp.username)
-             {
-                return temp.username
-             }
-             
-         })
-         const hashMap = await getIconsString(usernameMap)
-        res.render('article',{title: title, username: username, likes: likes, comments: comments, article: article, userID: ObjectId(req.session.passport.user).toString(), hashMap: hashMap});
+        if(req.session.passport)
+        {
+            const user1 = await db.findOne({'_id': ObjectId(req.session.passport.user)});
+            const postComment = { _id: ObjectId(req.session.passport.user), username: user1.username, comment: comment};
+            const response = await db2.findOneAndUpdate({title: title}, {$push: {comments: postComment}});
+            res.redirect(`/article/${title}`);
+        }
+        else
+        {
+            res.redirect('/login')
+        }
     })
 
     function checkAuthenticated(req, res, next)
