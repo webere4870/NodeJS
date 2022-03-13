@@ -123,7 +123,6 @@ async function run()
         })
         getKeyList(objectFollowing)
         .then((img)=>{
-            console.log(img)
             finalImgList = img.map((tempImg)=>
             {
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
@@ -151,11 +150,9 @@ async function run()
         let totalList = followersHash.concat(followingHash)
         let tempUserPic = await getUserProfilePic(user.img)
         let userPic = {username: user.username, mimetype: user.mimetype, b64: encode(tempUserPic.Body)}
-        console.log(totalList)
         let finalImgList = [];
         getKeyList(totalList)
         .then((img)=>{
-            console.log(img)
             finalImgList = img.map((tempImg)=>
             {
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
@@ -187,11 +184,9 @@ async function run()
 
     async function getKeyList(users)
     {
-        console.log(users, "users")
         let userList = users.map((temp)=> temp.username)
         let fullList = await db.find({username: {$in: userList}}).toArray()
         let keyList = fullList.map((temp)=> {
-            console.log(temp.username, temp.mimetype)
             return {username: temp.username, img: temp.img, mimetype: temp.mimetype}
 
         })
@@ -268,7 +263,6 @@ async function run()
             })
             getKeyList(objectFollowing)
             .then((img)=>{
-            console.log(img)
             finalImgList = img.map((tempImg)=>
             {
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
@@ -286,7 +280,6 @@ async function run()
             })
             getKeyList(objectFollowing)
             .then((img)=>{
-            console.log(img)
             finalImgList = img.map((tempImg)=>
             {
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
@@ -324,11 +317,9 @@ async function run()
         {
             return {username: temp.username, img: temp.img, mimetype: temp.mimetype}
         })
-        console.log(imageAndMimeType)
         for(let temp of imageAndMimeType)
         {
             let s3Data = await getUserProfilePic(temp.img)
-            console.log(s3Data)
             temp.b64 = encode(s3Data.Body)
         }
         for(let temp of usernameAndTitle)
@@ -345,6 +336,12 @@ async function run()
     {
         let {search} = req.params;
         const response = await db.find({username: {$regex: search}}).toArray()
+        for(let temp of response)
+        {
+            let s3data = await getUserProfilePic(temp.img)
+            let b64 = encode(s3data.Body)
+            temp.b64 = b64;
+        }
         res.json({success: true, data: response})
     })
 
@@ -420,7 +417,6 @@ async function run()
         let finalImgList = [];
         getKeyList(totalList)
         .then((img)=>{
-            console.log(img)
             finalImgList = img.map((tempImg)=>
             {
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
@@ -443,7 +439,6 @@ async function run()
         let finalImgList = [];
         getKeyList(totalList)
         .then((img)=>{
-            console.log(img)
             finalImgList = img.map((tempImg)=>
             {
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}

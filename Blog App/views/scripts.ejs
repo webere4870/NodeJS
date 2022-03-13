@@ -87,7 +87,7 @@
         let search = document.querySelector('#search')
         let newQuery = await fetch('/search/'+search.value)
         let {data} = await newQuery.json()
-        let parent = document.querySelector('#dropBox')
+        let parent = document.querySelector('#dropBox .colFlex')
         for(let temp of data)
         {
             console.log(temp)
@@ -104,7 +104,22 @@
         let search = document.querySelector('#search')
         let newQuery = await fetch('/searchUser/'+search.value)
         let userTemp = await newQuery.json()
+        let parent = document.querySelector('#dropBox .colFlex')
         console.log(userTemp)
+        for(let temp of userTemp.data)
+        {
+            let div = document.createElement('div')
+            div.className = "listing"
+            let a = document.createElement('a')
+            a.textContent = temp.username;
+            a.href = `/profile/${temp.username}`;
+            let img = document.createElement('img')
+            img.className = "profilePicture1"
+            img.src=`data:${temp.mimetype};base64,${temp.b64}`;
+            div.append(img);
+            div.append(a)
+            parent.append(div)
+        }
         /*
         let {data} = articlesTemp
         let users = data
