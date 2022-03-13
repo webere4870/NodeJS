@@ -306,12 +306,12 @@ async function run()
     app.get('/search/:search', async (req, res)=>
     {
         let {search} = req.params;
-        const response = await db2.find({article: {$regex: search}}).toArray()
-        let usernameOnly = response.map((temp)=> temp.username)
-        let usernameAndTitle = response.map((temp)=>
-        {
-            return {username: temp.username, title: temp.title}
-        })
+        const articles = await db2.find({article: {$regex: search}}).toArray()
+        let usernameOnly = articles.map((temp)=> temp.username)
+        // let usernameAndTitle = response.map((temp)=>
+        // {
+        //     return {username: temp.username, title: temp.title}
+        // })
         const userData = await db.find({username: {$in: usernameOnly}}).toArray()
         let imageAndMimeType = userData.map((temp)=>
         {
@@ -322,13 +322,13 @@ async function run()
             let s3Data = await getUserProfilePic(temp.img)
             temp.b64 = encode(s3Data.Body)
         }
-        for(let temp of usernameAndTitle)
+        for(let temp of articles)
         {
             let joinIndex = imageAndMimeType.findIndex((i)=> i.username == temp.username);
             temp.b64 = imageAndMimeType[joinIndex].b64
             temp.mimetype = imageAndMimeType[joinIndex].mimetype
         }
-        res.json({success: true, data: usernameAndTitle})
+        res.json({success: true, data: articles})
     })
 
 
