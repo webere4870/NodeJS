@@ -30,12 +30,11 @@
 
 <div id="following" style="display: none;" class="engagementCard hide">
     <div class="profileSubCard">
-         
     <% if(typeof user.following.length != 'undefined') {%> 
         <% for(let counter = 0; counter < user.following.length; counter++) {%> 
             <% let iconIndex = 0; let valid = false; let i = 0;%> 
             <% for(let j = 0; j < profilePicData.length; j++) {%>
-            <% if(profilePicData[j].username == user.followers[counter]){
+            <% if(profilePicData[j].username == user.following[counter]){
                                 iconIndex = j;
             } %>
             <% i++%> 
@@ -57,12 +56,21 @@
 <div class="colFlex">
     <img class="profilePicture1" style="width: 100px; height: 100px;" src='data:<%= userPic.mimetype %>;base64,<%= userPic.b64%>'/>
     <h1><%= user.first%> <%= user.last %></h1>
+    <% if(followBtn === true) {%>
+        <button class="followBtn hoverable<% if(followingOrNo == true){%>
+            followed 
+            <% } %> <% if(followingOrNo == false){ %>
+                unfollowed
+                <% } %> " id="followBtn"><% if(followingOrNo == true) {%>Unfollow<% } %> 
+                <% if(followingOrNo == false) {%>Follow<% } %>   
+                </button>
+    <% } %>  
     <div class="rowFlex" style="margin-bottom: 20px;">
         <div>
             <p>Followers: <span class="aquaText hoverable" onclick="toggle('#followers')"><%= user.followers.length %> </span></p>
         </div>
         <div>
-            <p>Following: <span class="aquaText hoverable" onclick="toggle('#following')"><%= user.followers.length %> </span></p>
+            <p>Following: <span class="aquaText hoverable" onclick="toggle('#following')"><%= user.following.length %> </span></p>
         </div>
     </div>
     <%- include('./card') %> 

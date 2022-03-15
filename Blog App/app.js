@@ -115,12 +115,14 @@ async function run()
     app.get('/', checkAuthenticated, async (req, res)=>
     {
         const {following} = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
+        
         const articles = await db2.find({username: {$in: following}}).toArray();
         let finalImgList = [];
         let objectFollowing = following.map((temp)=>
         {
             return {username: temp}
         })
+        
         getKeyList(objectFollowing)
         .then((img)=>{
             finalImgList = img.map((tempImg)=>
@@ -158,7 +160,7 @@ async function run()
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
             })
             finalImgList.push(userPic)
-            res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList, userPic: userPic})
+            res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList, userPic: userPic, followBtn: false})
         })
     })
 
@@ -420,6 +422,16 @@ async function run()
     app.get('/profile/:username', async (req, res)=>
     {
         const {username} = req.params
+        let {following} = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
+        let followingOrNo = true;
+        let index = following.findIndex((temp)=>
+        {
+            return temp === username;
+        })
+        if(index == -1)
+        {
+            followingOrNo = false;
+        }
         let user = await db.findOne({username: username})
         let articles = await db2.find({username: username}).toArray()
         let hashMap = await getIcons(articles);
@@ -436,10 +448,32 @@ async function run()
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
             })
             finalImgList.push(userPic)
-            res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList, userPic: userPic})
+            res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList, userPic: userPic, followBtn: true, followingOrNo: followingOrNo})
         })
         
     })
+
+
+    app.post('/follow/:username', async (req, res)=>
+    {
+        let followUnfollow = req.params.username;
+        let user = await db.findOne({"_id": ObjectId(req.session.passport.user.toString())})
+        let data = req.body;
+        if(data.add == true)
+        {
+            let response = await db.findOneAndUpdate({"_id": ObjectId(req.session.passport.user.toString())}, {$push: {following: followUnfollow}})
+            let response2 = await db.findOneAndUpdate({username: followUnfollow}, {$push: {followers: user.username}})
+        }
+        else
+        {
+            let response = await db.findOneAndUpdate({"_id": ObjectId(req.session.passport.user.toString())}, {$pull: {following: {$in: [followUnfollow]}}})
+            let response2 = await db.findOneAndUpdate({username: followUnfollow}, {$pull: {followers: {$in: [user.username]}}})
+        }
+        res.json({success: true})
+        
+    })
+
+
     app.get('/profile', checkAuthenticated, async (req, res)=>
     {
         const user = await db.findOne({'_id': ObjectId(req.session.passport.user)});
@@ -458,7 +492,7 @@ async function run()
                 return {username: tempImg.username, mimetype: tempImg.mimetype, b64: encode(tempImg.data.Body)}
             })
             finalImgList.push(userPic)
-            res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList, userPic: userPic})
+            res.render('profile', {user: user, articles: articles, hashMap: hashMap, followersHash: followersHash, followingHash: followingHash, profilePicData: finalImgList, userPic: userPic, followBtn: false})
         })
         
         /*let finalImgList = totalHashData.map((tempImg)=>
