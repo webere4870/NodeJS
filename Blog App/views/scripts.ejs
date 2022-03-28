@@ -1,4 +1,12 @@
 <script>
+
+    $("#message").click((evt)=>
+    {
+        let username = location.pathname.split(`/`)[2]
+        let socket = io('http://localhost:5050')
+        socket.emit('joinRoom', {username: username})
+    })
+
     $('#followBtn').click(async (evt)=>
     {
         let arr = location.pathname.split('/')

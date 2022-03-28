@@ -16,6 +16,8 @@ app.listen(5000, ()=>
 })
 
 
+
+
 // AWS/S3 image upload libraries
 const S3 = require('aws-sdk/clients/s3')
 const fs =  require('fs')
@@ -50,11 +52,30 @@ const bodyParser = require('body-parser')
 
 // MongoDB
 const {MongoClient, ObjectId} = require('mongodb')
-const uri = require('./uri.js')
 const { log } = require('console')
 const { get } = require('express/lib/response')
 const { getCipherInfo } = require('crypto')
-const client = new MongoClient(uri)
+const client = new MongoClient(process.env.MONGO_URI)
+
+
+const http = require('http')
+const socketApp = express()
+const socketServer = http.createServer(socketApp)
+const io = require('socket.io')(socketServer, {cors: {origin: '*'}})
+
+socketServer.listen((5050), ()=>
+{
+    console.log("Listening on 5050")
+})
+
+io.on('connection', (socket)=>
+{
+    console.log(socket.id," has connected")
+    socket.on('joinRoom', (data)=>
+    {
+        
+    })
+})
 
 
 // Main function
