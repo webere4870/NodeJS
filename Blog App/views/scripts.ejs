@@ -1,5 +1,7 @@
 <script>
 
+    $('')
+
     $("#message").click((evt)=>
     {
         let username = location.pathname.split(`/`)[2]
@@ -38,6 +40,15 @@
         $('#dropBox').slideUp(500)
     })
     
+    $('.search').focus((evt)=>
+    {
+        $('#dropbox').slideToggle(250);
+    })
+
+    $('.messageQuery #dropBox a').click((evt)=>
+    {
+        
+    })
 
     $('#search').on('input', ()=>
     {
@@ -96,6 +107,11 @@
     {
         $(query).toggle()
     }
+
+    $('#messageSearchBtn').click((evt)=>
+    {
+        queryByUser();
+    })
 
     async function queryType()
     {
@@ -192,9 +208,23 @@
         }*/
     }
 
+    let messageUser = document.querySelectorAll('.messageUser')
+    for(let temp of messageUser)
+    {
+        temp.addEventListener("click", ()=>
+        {
+            console.log("Here temper")
+        })
+    }
+
+    $(document).on('click', '.messageUser', async function(evt) {
+        let chatData = await fetch(`/chat/${$(evt.currentTarget).text().trim()}`)
+        let json = await chatData.json();
+        console.log(json)
+    });
+
     async function queryByUser()
     {
-        
         let search = document.querySelector('#search')
         let newQuery = await fetch('/searchUser/'+search.value)
         let userTemp = await newQuery.json()
@@ -202,17 +232,38 @@
         $('.listing').remove()
         for(let temp of userTemp.data)
         {
-            let div = document.createElement('div')
-            div.className = "listing"
-            let a = document.createElement('a')
-            a.textContent = temp.username;
-            a.href = `/profile/${temp.username}`;
-            let img = document.createElement('img')
-            img.className = "profilePicture1"
-            img.src=`data:${temp.mimetype};base64,${temp.b64}`;
-            div.append(img);
-            div.append(a)
-            parent.append(div)
+            let searchParam = location.pathname;
+            console.log(searchParam)
+            if(searchParam.includes('chat'))
+            {
+                let div = document.createElement('div')
+                div.className = "listing"
+                let a = document.createElement('a')
+                a.textContent = temp.username;
+                a.classList.add("messageUser")
+                a.classList.add("hoverable")
+                let img = document.createElement('img')
+                img.className = "profilePicture1"
+                img.src=`data:${temp.mimetype};base64,${temp.b64}`;
+                div.append(img);
+                div.append(a)
+                parent.append(div)
+            }
+            else
+            {
+                let div = document.createElement('div')
+                div.className = "listing"
+                let a = document.createElement('a')
+                a.textContent = temp.username;
+                a.href = `/profile/${temp.username}`;
+                let img = document.createElement('img')
+                img.className = "profilePicture1"
+                img.src=`data:${temp.mimetype};base64,${temp.b64}`;
+                div.append(img);
+                div.append(a)
+                parent.append(div)
+            }
+            
         }
         /*
         let {data} = articlesTemp

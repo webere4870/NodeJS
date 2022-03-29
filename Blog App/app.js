@@ -312,6 +312,18 @@ async function run()
         }
     })
 
+    app.get('/chat', checkAuthenticated,(req, res)=>
+    {
+        res.render('chat')
+    })
+
+    app.get('/chat/:otherUsername', async (req, res)=>
+    {
+        let {username} = await db.findOne({"_id": ObjectId(req.session.passport.user)});
+        let {otherUsername} = req.params;
+        console.log(username, otherUsername)
+    })
+
     app.get('/write', checkAuthenticated,(req, res)=>
     {
         res.render('write')

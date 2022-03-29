@@ -1,0 +1,26 @@
+<div id="messageList">
+    <!-- <div id="messageSearch" class="rowFlex">
+        <input type="text" placeholder="Search">
+        <i class="bi bi-search"></i>
+    </div> -->
+    <div style="display: flex; justify-content: center; padding: 10px; border-bottom: 1px solid gray; position: relative;">
+        <input type="search" id="search" name="search" placeholder="Search">
+        <button id="messageSearchBtn" class="colFlex hoverable"><i class="bi bi-search" style="font-size: 1rem;"></i></button>
+        <div id="dropBox" class="messageQuery">
+        <div class="colFlex" style="justify-content: flex-start; align-items: flex-start;">
+        </div>
+        <div class="closeBtn" style="right: 15px;">
+            <i class="far fa-times-circle"></i>
+        </div>
+    </div>
+    </div>
+    
+    <div class="messageThread">
+
+    </div>
+</div>
+<div id="chatBox">
+    <div class="message"></div>
+</div>
+
+<%- include('./logout') %> 

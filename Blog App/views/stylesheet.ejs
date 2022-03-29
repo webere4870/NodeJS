@@ -382,6 +382,52 @@
         left: 0vw;
     }
 
+    #messageList
+    {
+        position: absolute;
+        top: 0;
+        left: 65px;
+        height: 100vh;
+        width: 300px;
+        border-right: 1px solid gray;
+        background: #c5c5c5;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: column;
+        overflow-y: scroll;
+    }
+
+    .messageThread
+    {
+        height: 100px;
+        width: 100%;
+        border-bottom: 1px solid gray;
+    }
+
+    #chatBox
+    {
+        position: absolute;
+        top: 0;
+        left: 365px;
+        height: 100vh;
+        width: calc(100% - 365px);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .message
+    {
+        height: 75px;
+        width: 80%;
+        border-radius: 10px;
+        background: var(--main-white);
+        margin: 10px;
+        box-shadow: 0 0 10px gray;
+    }
+
     #cardComments
     {
         height: 80%;
@@ -664,6 +710,27 @@
         font-size: 20px;
     }
 
+    #messageSearch > *
+    {
+        margin: 5px;
+    }
+
+    #messageSearchBtn
+    {
+        width: 60px;
+        height: 35px;
+        background: var(--aqua);
+        border-bottom-right-radius: 5px;
+        border-top-right-radius: 5px;
+        z-index: 100;
+        box-shadow: 0 0 5px gray;
+    }
+
+    .messageQuery
+    {
+        
+    }
+
     #searchBox
     {
         display: flex;
@@ -672,6 +739,8 @@
         margin: 20px 0 40px 0;
         position: relative;
     }
+
+    
 
     #dropBox
     {
