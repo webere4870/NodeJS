@@ -62,6 +62,7 @@ const http = require('http')
 const socketApp = express()
 const socketServer = http.createServer(socketApp)
 const io = require('socket.io')(socketServer, {cors: {origin: '*'}})
+const {formatMessage} = require('./utils/messages.js')
 
 socketServer.listen((5050), ()=>
 {
@@ -70,12 +71,19 @@ socketServer.listen((5050), ()=>
 
 io.on('connection', (socket)=>
 {
+    let username;
+    let users;
+    let roomName;
     console.log(socket.id," has connected")
 
     socket.on('joinRoom', (data)=>
     {
         socket.join(data.roomName)
-        io.to(data.roomName).emit("message", "User has joined")
+        roomName = data.roomName
+        username = data.initiatingUser
+        users = data.users
+        let newMessage = formatMessage(data.initiatingUser, `${data.initiatingUser} has joined the chat.`);
+        io.to(data.roomName).emit("message", newMessage)
     })
 
     socket.on('message', (data)=>

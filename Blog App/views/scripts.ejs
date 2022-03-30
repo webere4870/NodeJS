@@ -232,7 +232,7 @@
             joinString += temp;
         }
         socket = io('http://localhost:5050')
-        socket.emit('joinRoom', {roomName: joinString, initiatingUser: json.initiatingUser})
+        socket.emit('joinRoom', {roomName: joinString, initiatingUser: json.initiatingUser, users: json.users})
         socket.on('message', (data)=>
         {
             console.log(data)
