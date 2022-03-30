@@ -1,12 +1,11 @@
 <script>
 
-    $('')
+    let socket;
 
     $("#message").click((evt)=>
     {
         let username = location.pathname.split(`/`)[2]
-        let socket = io('http://localhost:5050')
-        socket.emit('joinRoom', {username: username})
+        
     })
 
     $('#followBtn').click(async (evt)=>
@@ -220,7 +219,24 @@
     $(document).on('click', '.messageUser', async function(evt) {
         let chatData = await fetch(`/chat/${$(evt.currentTarget).text().trim()}`)
         let json = await chatData.json();
-        console.log(json)
+
+        for(let temp of json.messages)
+        {
+            let incomingMessage = document.createElement('div')
+            incomingMessage.classList.add('messageThread')
+        }
+
+        let joinString = "";
+        for(let temp of json.users)
+        {
+            joinString += temp;
+        }
+        socket = io('http://localhost:5050')
+        socket.emit('joinRoom', {roomName: joinString, initiatingUser: json.initiatingUser})
+        socket.on('message', (data)=>
+        {
+            console.log(data)
+        })
     });
 
     async function queryByUser()

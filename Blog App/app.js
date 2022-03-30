@@ -71,7 +71,14 @@ socketServer.listen((5050), ()=>
 io.on('connection', (socket)=>
 {
     console.log(socket.id," has connected")
+
     socket.on('joinRoom', (data)=>
+    {
+        socket.join(data.roomName)
+        io.to(data.roomName).emit("message", "User has joined")
+    })
+
+    socket.on('message', (data)=>
     {
         
     })
@@ -86,6 +93,7 @@ async function run()
     await client.connect()
     let db = client.db('Users').collection('Users')
     let db2 = client.db('Users').collection('Articles')
+    let messagesDB = client.db('Users').collection('Messages')
 
     // Configure passport
     config(
@@ -321,7 +329,22 @@ async function run()
     {
         let {username} = await db.findOne({"_id": ObjectId(req.session.passport.user)});
         let {otherUsername} = req.params;
-        console.log(username, otherUsername)
+        let usernameArr = [username, otherUsername];
+        let sorted = usernameArr.sort()
+        let messageData = await messagesDB.findOne({users: sorted})
+        if(messageData)
+        {
+            messageData.initiatingUser = username
+            res.json(messageData)
+        }
+        else
+        {
+            let newThread = await messagesDB.insertOne({users: sorted, messages: []})
+            let tempID = newThread.insertedId;
+            let retrieveThread = await messagesDB.findOne({"_id": tempID})
+            retrieveThread.initiatingUser = username
+            res.json(retrieveThread)
+        }
     })
 
     app.get('/write', checkAuthenticated,(req, res)=>
