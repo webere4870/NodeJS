@@ -4,6 +4,7 @@
         --main-white: #e7e7e7;
         --aqua: #0099ff;
         --main-gray: #1f2833;
+        --main-font: 'Poiret One', cursive;
         font-family: 'Poiret One', cursive;
     }
     *
@@ -220,6 +221,17 @@
     {
         border: none;
     }
+
+    .submitBtn
+    {
+        padding: 10px 20px;
+        border-radius: 5px;
+        background: var(--aqua);
+        box-shadow: 0 0 5px gray;
+        font-family: var(--main-font);
+        color: white;
+    }
+
     .tableDiv  { display: table;      }
     .loginForm
     {
@@ -409,12 +421,28 @@
         position: absolute;
         top: 0;
         left: 365px;
-        height: 100vh;
+        height: 70vh;
         width: calc(100% - 365px);
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
+        overflow-y: scroll;
+    }
+
+    #bottomChatBox
+    {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: calc(100% - 365px);
+        height: 30vh;
+        border-top: 1px solid gray;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background: #cacaca;
     }
 
     .message
@@ -429,6 +457,10 @@
     #messageBox{
         height: 100px;
         width: 80%;
+        border-radius: 5px;
+        font-family: 'Poiret One', cursive;
+        font-size: 20px;
+        padding: 5px;
     }
 
     #cardComments

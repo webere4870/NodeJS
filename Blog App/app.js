@@ -107,9 +107,11 @@ io.on('connection', (socket)=>
         io.to(data.roomName).emit("setupData", {profilePictureData: profilePictureArray})
     })
 
-    socket.on('message', (data)=>
+    socket.on('message', async (data)=>
     {
-        console.log(data)
+        let messageObject = formatMessage(data.username, data.text)
+        io.to(roomName).emit('message', messageObject)
+        await messagesDB.findOneAndUpdate({users: users}, {$push: {messages: messageObject}})
     })
 })
 

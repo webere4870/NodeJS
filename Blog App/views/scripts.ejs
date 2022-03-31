@@ -217,9 +217,10 @@
     }
 
     $(document).on('click', '.messageUser', async function(evt) {
+
         let chatData = await fetch(`/chat/${$(evt.currentTarget).text().trim()}`)
         let json = await chatData.json();
-
+        let currentUser = json.initiatingUser
         let userData;
 
         let joinString = "";
@@ -231,26 +232,33 @@
         socket.emit('joinRoom', {roomName: joinString, initiatingUser: json.initiatingUser, users: json.users})
         socket.on('message', (data)=>
         {
-            console.log(data)
+            postMessage(userData, data.username, data.text, data.time)
         })
+
+        $('#messageBtn').click((evt)=>
+        {
+            socket.emit('message', {username: currentUser, text: $('#messageBox').val()})
+            $('#messageBox').val("")
+        })
+
         socket.on('setupData', (data)=>
         {
             userData = data.profilePictureData;
-            console.log(userData)
-            let parent = document.querySelector("#chatBox")
-            let textBox = document.createElement('textarea')
-            textBox.id = "messageBox"
-            let submitBtn = document.createElement('button')
-            submitBtn.id = "submitMessage"
-            parent.appendChild(textBox)
-            parent.appendChild(submitBtn)
             for(let temp of json.messages)
             {
+                postMessage(userData, temp.username, temp.text, temp.time)
+            }
+        })
+    });
+
+    function postMessage(userData, username, text, time)
+    {
+                let parent = document.querySelector("#chatBox")
                 let incomingMessage = document.createElement('div')
                 incomingMessage.classList.add('message')
                 let a = document.createElement('a')
-                a.href = `/profile/${temp.username}`
-                a.textContent = temp.username
+                a.href = `/profile/${username}`
+                a.textContent = username
                 incomingMessage.appendChild(a)
                 let img = document.createElement('img')
                 img.className = "profilePicture1"
@@ -258,7 +266,7 @@
                 let mimetype;
                 for(let joinUsernameToImg of userData)
                 {
-                    if(joinUsernameToImg.username === temp.username)
+                    if(joinUsernameToImg.username === username)
                     {
                         mimetype = joinUsernameToImg.mimetype
                         b64 = joinUsernameToImg.b64
@@ -268,15 +276,13 @@
                 img.src=`data:${mimetype};base64,${b64}`;
                 incomingMessage.appendChild(img)
                 let p = document.createElement('p')
-                p.textContent = temp.text
+                p.textContent = text
                 incomingMessage.appendChild(p)
                 let dateTime = document.createElement('p')
-                dateTime.textContent = temp.time
+                dateTime.textContent = time
                 incomingMessage.appendChild(dateTime)
                 parent.appendChild(incomingMessage)
-            }
-        })
-    });
+    }
 
     async function queryByUser()
     {
