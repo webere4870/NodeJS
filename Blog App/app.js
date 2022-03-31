@@ -69,29 +69,6 @@ socketServer.listen((5050), ()=>
     console.log("Listening on 5050")
 })
 
-io.on('connection', (socket)=>
-{
-    let username;
-    let users;
-    let roomName;
-    console.log(socket.id," has connected")
-
-    socket.on('joinRoom', (data)=>
-    {
-        socket.join(data.roomName)
-        roomName = data.roomName
-        username = data.initiatingUser
-        users = data.users
-        let newMessage = formatMessage(data.initiatingUser, `${data.initiatingUser} has joined the chat.`);
-        io.to(data.roomName).emit("message", newMessage)
-    })
-
-    socket.on('message', (data)=>
-    {
-        
-    })
-})
-
 
 // Main function
 async function run()
@@ -102,6 +79,40 @@ async function run()
     let db = client.db('Users').collection('Users')
     let db2 = client.db('Users').collection('Articles')
     let messagesDB = client.db('Users').collection('Messages')
+
+io.on('connection', (socket)=>
+{
+    let username;
+    let users;
+    let roomName;
+    console.log(socket.id," has connected")
+
+    socket.on('joinRoom', async (data)=>
+    {
+        socket.join(data.roomName)
+        roomName = data.roomName
+        username = data.initiatingUser
+        users = data.users
+        let profilePictureArray = [];
+        for(let temp of users)
+        {
+            let {mimetype, img} = await db.findOne({username: temp})
+            let data = await getUserProfilePic(img)
+            let encoded = encode(data.Body)
+            profilePictureArray.push({username: temp, mimetype: mimetype, b64: encoded})
+        }
+
+        
+
+        io.to(data.roomName).emit("setupData", {profilePictureData: profilePictureArray})
+    })
+
+    socket.on('message', (data)=>
+    {
+        console.log(data)
+    })
+})
+
 
     // Configure passport
     config(

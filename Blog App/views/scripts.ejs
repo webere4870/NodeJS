@@ -220,11 +220,7 @@
         let chatData = await fetch(`/chat/${$(evt.currentTarget).text().trim()}`)
         let json = await chatData.json();
 
-        for(let temp of json.messages)
-        {
-            let incomingMessage = document.createElement('div')
-            incomingMessage.classList.add('messageThread')
-        }
+        let userData;
 
         let joinString = "";
         for(let temp of json.users)
@@ -236,6 +232,49 @@
         socket.on('message', (data)=>
         {
             console.log(data)
+        })
+        socket.on('setupData', (data)=>
+        {
+            userData = data.profilePictureData;
+            console.log(userData)
+            let parent = document.querySelector("#chatBox")
+            let textBox = document.createElement('textarea')
+            textBox.id = "messageBox"
+            let submitBtn = document.createElement('button')
+            submitBtn.id = "submitMessage"
+            parent.appendChild(textBox)
+            parent.appendChild(submitBtn)
+            for(let temp of json.messages)
+            {
+                let incomingMessage = document.createElement('div')
+                incomingMessage.classList.add('message')
+                let a = document.createElement('a')
+                a.href = `/profile/${temp.username}`
+                a.textContent = temp.username
+                incomingMessage.appendChild(a)
+                let img = document.createElement('img')
+                img.className = "profilePicture1"
+                let b64;
+                let mimetype;
+                for(let joinUsernameToImg of userData)
+                {
+                    if(joinUsernameToImg.username === temp.username)
+                    {
+                        mimetype = joinUsernameToImg.mimetype
+                        b64 = joinUsernameToImg.b64
+                    }
+                }
+
+                img.src=`data:${mimetype};base64,${b64}`;
+                incomingMessage.appendChild(img)
+                let p = document.createElement('p')
+                p.textContent = temp.text
+                incomingMessage.appendChild(p)
+                let dateTime = document.createElement('p')
+                dateTime.textContent = temp.time
+                incomingMessage.appendChild(dateTime)
+                parent.appendChild(incomingMessage)
+            }
         })
     });
 
