@@ -341,9 +341,23 @@ io.on('connection', (socket)=>
         }
     })
 
-    app.get('/chat', checkAuthenticated,(req, res)=>
+    app.get('/chat', checkAuthenticated, async (req, res)=>
     {
-        res.render('chat')
+        let {username} = await db.findOne({"_id": ObjectId(req.session.passport.user)});
+        let messages = await messagesDB.find({users: {$in: [username]}}).toArray()
+
+        for(let temp of messages)
+        {
+            let otherUserIndex = temp.users.findIndex((arr) => arr !== username)
+            temp.otherUsername = temp.users[otherUserIndex]
+            let {img, mimetype} = await db.findOne({username: temp.users[otherUserIndex]})
+            let pictureData = await getUserProfilePic(img)
+            let encoded = encode(pictureData.Body)
+            temp.mimetype = mimetype
+            temp.b64 = encoded
+        }
+        
+        res.render('chat', {messages: messages})
     })
 
     app.get('/chat/:otherUsername', async (req, res)=>

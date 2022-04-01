@@ -216,10 +216,33 @@
         })
     }
 
-    $(document).on('click', '.messageUser', async function(evt) {
+    $(document).on('click', '.messageThread', async function(evt)
+    {
+        clearChat()
+        let identifyUsername = $(evt.currentTarget).find('h2').text()
+        let chatData = await fetch(`/chat/${identifyUsername}`)
+        let json = await chatData.json()
+        openSocket(json)
+    })
 
+    $(document).on('click', '.messageUser', async function(evt) {
+        clearChat()
         let chatData = await fetch(`/chat/${$(evt.currentTarget).text().trim()}`)
         let json = await chatData.json();
+        openSocket(json)
+    });
+
+    function clearChat()
+    {
+        let messageThreads = document.querySelectorAll('.message')
+        for(let temp of messageThreads)
+        {
+            temp.remove()
+        }
+    }
+
+    async function openSocket(json)
+    {
         let currentUser = json.initiatingUser
         let userData;
 
@@ -228,6 +251,7 @@
         {
             joinString += temp;
         }
+        socket = null;
         socket = io('http://localhost:5050')
         socket.emit('joinRoom', {roomName: joinString, initiatingUser: json.initiatingUser, users: json.users})
         socket.on('message', (data)=>
@@ -249,7 +273,7 @@
                 postMessage(userData, temp.username, temp.text, temp.time)
             }
         })
-    });
+    }
 
     function postMessage(userData, username, text, time)
     {
@@ -282,6 +306,7 @@
                 dateTime.textContent = time
                 incomingMessage.appendChild(dateTime)
                 parent.appendChild(incomingMessage)
+                parent.scrollTop = parent.scrollHeight;
     }
 
     async function queryByUser()

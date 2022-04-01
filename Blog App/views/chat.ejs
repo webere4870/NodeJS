@@ -15,9 +15,12 @@
     </div>
     </div>
     
-    <div class="messageThread">
-
-    </div>
+    <% for(let counter = 0; counter < messages.length; counter++) { %>
+        <div class="messageThread hoverable">
+            <img class="profilePicture1" src='data:<%= messages[counter].mimetype %>;base64,<%= messages[counter].b64%>'/>
+            <h2 class="usernameSelector"><%= messages[counter].otherUsername %></h2> 
+        </div>
+    <% } %>  
 </div>
 <div id="chatBox">
     
