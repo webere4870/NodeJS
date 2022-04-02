@@ -5,6 +5,7 @@
     $("#message").click(async (evt)=>
     {
         let username = location.pathname.split(`/`)[2]
+        let chatData = await fetch(`/chat/${username}`)
         location.href = `/chat#${username}`
     })
 
@@ -236,6 +237,11 @@
         let identifyUsername = $(evt.currentTarget).find('h2').text()
         let chatData = await fetch(`/chat/${identifyUsername}`)
         let json = await chatData.json()
+        location.href = `/chat/#${identifyUsername}`
+        if(socket)
+        {
+            socket.emit('end')
+        }
         openSocket(json)
     })
 
@@ -244,7 +250,8 @@
         let otherUsername = $(evt.currentTarget).text().trim()
         let chatData = await fetch(`/chat/${otherUsername}`)
         let json = await chatData.json();
-        let {messages} = json
+        location.href = `/chat/#${otherUsername}`
+        /*let {messages} = json
         console.log(messages)
         if(messages.length == 0)
         {
@@ -264,12 +271,17 @@
             messageThread.appendChild(h2)
             parent.appendChild(messageThread)
         }
-        openSocket(json)
+        openSocket(json)*/
     });
 
     function clearChat()
     {
         location.hash = ""
+        if(location.hash)
+        {
+            location.pathname = "/chat"
+            
+        }
         let messageThreads = document.querySelectorAll('.message')
         for(let temp of messageThreads)
         {
@@ -288,10 +300,18 @@
         }
         socket = null;
         socket = io('http://localhost:5050')
+        socket.removeAllListeners()
         socket.emit('joinRoom', {roomName: joinString, initiatingUser: json.initiatingUser, users: json.users})
         socket.on('message', (data)=>
         {
-            postMessage(userData, data.username, data.text, data.time)
+            if(data.text == "")
+            {
+
+            }
+            else{
+                postMessage(userData, data.username, data.text, data.time)
+            }
+            
         })
 
         $('#messageBtn').click((evt)=>

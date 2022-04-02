@@ -82,9 +82,11 @@ async function run()
 
 io.on('connection', (socket)=>
 {
+    
     let username;
     let users;
     let roomName;
+    socket.removeAllListeners();
     console.log(socket.id," has connected")
 
     socket.on('joinRoom', async (data)=>
@@ -102,16 +104,21 @@ io.on('connection', (socket)=>
             profilePictureArray.push({username: temp, mimetype: mimetype, b64: encoded})
         }
 
-        
-
-        io.to(data.roomName).emit("setupData", {profilePictureData: profilePictureArray})
+        io.to(roomName).emit("setupData", {profilePictureData: profilePictureArray})
     })
 
     socket.on('message', async (data)=>
     {
+        console.log(roomName)
         let messageObject = formatMessage(data.username, data.text)
         io.to(roomName).emit('message', messageObject)
         await messagesDB.findOneAndUpdate({users: users}, {$push: {messages: messageObject}})
+    })
+
+    socket.on('end', (data)=>
+    {
+        console.log("Disconnection")
+        socket.disconnect(0)
     })
 })
 
@@ -345,7 +352,6 @@ io.on('connection', (socket)=>
     {
         let {username} = await db.findOne({"_id": ObjectId(req.session.passport.user)});
         let messages = await messagesDB.find({users: {$in: [username]}}).toArray()
-
         for(let temp of messages)
         {
             let otherUserIndex = temp.users.findIndex((arr) => arr !== username)
