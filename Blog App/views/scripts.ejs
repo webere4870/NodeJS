@@ -2,10 +2,24 @@
 
     let socket;
 
-    $("#message").click((evt)=>
+    $("#message").click(async (evt)=>
     {
         let username = location.pathname.split(`/`)[2]
-        
+        location.href = `/chat#${username}`
+    })
+
+    $(async function(evt)
+    {
+        if(location.pathname.includes("chat"))
+        {
+            if(location.hash)
+            {
+                let username = location.hash.substring(1, location.hash.length)
+                let chatData = await fetch(`/chat/${username}`)
+                let json = await chatData.json()
+                openSocket(json)
+            }
+        }
     })
 
     $('#followBtn').click(async (evt)=>
@@ -227,13 +241,35 @@
 
     $(document).on('click', '.messageUser', async function(evt) {
         clearChat()
-        let chatData = await fetch(`/chat/${$(evt.currentTarget).text().trim()}`)
+        let otherUsername = $(evt.currentTarget).text().trim()
+        let chatData = await fetch(`/chat/${otherUsername}`)
         let json = await chatData.json();
+        let {messages} = json
+        console.log(messages)
+        if(messages.length == 0)
+        {
+            let profileForThread = await fetch(`/chat/profile/${otherUsername}`)
+            let {mimetype, b64} = await profileForThread.json()
+            let parent = document.querySelector('#messageList')
+            let messageThread = document.createElement('div')
+            messageThread.classList.add("messageThread")
+            messageThread.classList.add("hoverable")
+            let img = document.createElement('img')
+            img.src=`data:${mimetype};base64,${b64}`;
+            img.className = "profilePicture1"
+            let h2 = document.createElement('h2')
+            h2.classList.add("usernameSelector")
+            h2.textContent = otherUsername
+            messageThread.appendChild(img)
+            messageThread.appendChild(h2)
+            parent.appendChild(messageThread)
+        }
         openSocket(json)
     });
 
     function clearChat()
     {
+        location.hash = ""
         let messageThreads = document.querySelectorAll('.message')
         for(let temp of messageThreads)
         {
@@ -245,7 +281,6 @@
     {
         let currentUser = json.initiatingUser
         let userData;
-
         let joinString = "";
         for(let temp of json.users)
         {
@@ -315,7 +350,7 @@
         let newQuery = await fetch('/searchUser/'+search.value)
         let userTemp = await newQuery.json()
         let parent = document.querySelector('#dropBox .colFlex')
-        $('.listing').remove()
+        $('.listing').each().remove()
         for(let temp of userTemp.data)
         {
             let searchParam = location.pathname;

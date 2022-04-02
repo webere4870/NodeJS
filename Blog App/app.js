@@ -360,6 +360,14 @@ io.on('connection', (socket)=>
         res.render('chat', {messages: messages})
     })
 
+    app.get('/chat/profile/:username', async (req, res)=>
+    {
+        let {img, mimetype} = await db.findOne({username: req.params.username})
+        let unencoded = await getUserProfilePic(img)
+        let encoded = encode(unencoded.Body)
+        res.json({mimetype: mimetype, b64: encoded})
+    })
+
     app.get('/chat/:otherUsername', async (req, res)=>
     {
         let {username} = await db.findOne({"_id": ObjectId(req.session.passport.user)});
@@ -492,7 +500,7 @@ io.on('connection', (socket)=>
         {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
             const {first, last, email, username} = req.body
-            const newUser = {username: username, first: first, last: last, email: email, password: hashedPassword, followers: [], following: [], biography: "", icon: "bi bi-robot", color: "#0099ff", img: "", mimetype: ""}
+            const newUser = {username: username, first: first, last: last, email: email, password: hashedPassword, followers: [], following: [], biography: "", icon: "bi bi-robot", color: "#0099ff", img: "d23421da2ba7b894122580e35b9b637d", mimetype: "image/png"}
             await db.insertOne(newUser)
             res.redirect('login')
         }
