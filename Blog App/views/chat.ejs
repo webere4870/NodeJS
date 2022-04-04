@@ -3,7 +3,7 @@
         <input type="text" placeholder="Search">
         <i class="bi bi-search"></i>
     </div> -->
-    <div style="display: flex; justify-content: center; padding: 10px; border-bottom: 1px solid gray; position: relative;">
+    <div style="display: flex; justify-content: center; padding: 10px; position: relative;" id="searchContainer">
         <input type="search" id="search" name="search" placeholder="Search">
         <button id="messageSearchBtn" class="colFlex hoverable"><i class="bi bi-search" style="font-size: 1rem;"></i></button>
         <div id="dropBox" class="messageQuery">
@@ -22,11 +22,17 @@
         </div>
     <% } %>  
 </div>
-<div id="chatBox">
+<div id="chatWrapper">
+    <div id="returnToChat" class="hoverable">
+        <i class="bi bi-arrow-left-circle-fill"></i>
+        <p>Messages</p>
+    </div>
+    <div id="chatBox">
     
-</div>
-<div id="bottomChatBox">
-    <textarea name="" id="messageBox" cols="30" rows="10" placeholder="Type a message..."></textarea>
-    <button class="submitBtn hoverable" style="margin-top: 10px;" id="messageBtn">Send</button>
+    </div>
+    <div id="bottomChatBox">
+        <textarea name="" id="messageBox" cols="30" rows="10" placeholder="Type a message..."></textarea>
+        <button class="submitBtn hoverable" style="margin-top: 10px;" id="messageBtn">Send</button>
+    </div>
 </div>
 <%- include('./logout') %> 

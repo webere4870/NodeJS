@@ -9,6 +9,17 @@
         location.href = `/chat#${username}`
     })
 
+    $("#returnToChat").click((evt)=>
+    {
+        if(socket)
+        {
+            socket.emit('end')
+            socket = null;
+        }
+        $('#chatWrapper').toggle(400)
+        $('#messageList').toggle(0)
+    })
+
     $(async function(evt)
     {
         if(location.pathname.includes("chat"))
@@ -21,6 +32,12 @@
                 openSocket(json)
             }
         }
+    })
+
+    $('#toggleMenu i').click((evt)=>
+    {
+        $('nav').toggle(250);
+        console.log("Should work")
     })
 
     $('#followBtn').click(async (evt)=>
@@ -129,6 +146,17 @@
 
     async function queryType()
     {
+        let listings = document.querySelectorAll('.listing')
+        let cards = document.querySelectorAll('.card')
+        for(let temp of listings)
+        {
+            temp.remove()
+        }
+        for(let temp of cards)
+        {
+            temp.remove()
+        }
+        $('#dropBox .card').each()
         let type = $('#searchSelect').text();
         if(type == "Articles")
         {
@@ -233,7 +261,6 @@
 
     $(document).on('click', '.messageThread', async function(evt)
     {
-        clearChat()
         let identifyUsername = $(evt.currentTarget).find('h2').text()
         let chatData = await fetch(`/chat/${identifyUsername}`)
         let json = await chatData.json()
@@ -242,6 +269,7 @@
         {
             socket.emit('end')
         }
+
         openSocket(json)
     })
 
@@ -297,6 +325,11 @@
         for(let temp of json.users)
         {
             joinString += temp;
+        }
+        if(window.innerWidth <= 768)
+        {
+            $('#chatWrapper').toggle(400)
+            $('#messageList').toggle(0)
         }
         socket = null;
         socket = io('http://localhost:5050')

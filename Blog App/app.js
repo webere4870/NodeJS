@@ -109,10 +109,12 @@ io.on('connection', (socket)=>
 
     socket.on('message', async (data)=>
     {
-        console.log(roomName)
-        let messageObject = formatMessage(data.username, data.text)
-        io.to(roomName).emit('message', messageObject)
-        await messagesDB.findOneAndUpdate({users: users}, {$push: {messages: messageObject}})
+        if(data.text !== "")
+        {
+            let messageObject = formatMessage(data.username, data.text)
+            io.to(roomName).emit('message', messageObject)
+            await messagesDB.findOneAndUpdate({users: users}, {$push: {messages: messageObject}})
+        }
     })
 
     socket.on('end', (data)=>
