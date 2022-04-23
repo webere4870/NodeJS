@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const temp1 = () =>
+        {
+            console.log("here1")
+        }
+        const temp2 = (()=>
+        {
+            console.log("here1")
+        })()
+        let copy1 = Object.create(temp1)
+        let copy2 = Object.create(temp2)
+        copy1()
+        copy2()
+    </script>
+</body>
+</html>
