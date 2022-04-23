@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const User = require('mongoose').model('userModel')
 const {validatePassword, generateDatabaseRecord, generateJWT} = require('../utils/generateJWT')
+const dayjs = require('dayjs')
 
 router.get('/', (req, res)=>
 {
@@ -28,7 +29,11 @@ router.post('/register', async (req, res)=>
     {
         console.log(user)
         const tokenObject = generateJWT(user)
-        res.json({success: true, user: user, token: tokenObject.token, expires: tokenObject.expires})
+        res.cookie("secureCookie", JSON.stringify(tokenObject.token),{
+            httpOnly: true,
+            expires: dayjs().add(30, "days").toDate()
+        })
+        res.render('index')
     })
 })
 
