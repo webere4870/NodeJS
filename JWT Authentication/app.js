@@ -7,6 +7,7 @@ const expressLayouts = require('express-ejs-layouts')
 
 require('./config/database.js')
 require('./config/userModel.js')
+require('./config/passport')
 const routes = require('./routes/index.js')
 
 app.set('view engine', 'ejs')

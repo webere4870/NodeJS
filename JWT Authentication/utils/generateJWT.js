@@ -1,7 +1,9 @@
 const crypto = require('crypto')
 const jsonwebtoken = require('jsonwebtoken')
 const fs = require('fs')
+const path = require('path')
 const privateKey = fs.readFileSync(__dirname + "/../keys/id_rsa_priv.pem", 'utf-8')
+const publicKey = fs.readFileSync(__dirname + "/../keys/id_rsa_pub.pem", 'utf-8')
 
 function validatePassword(password, hash, salt)
 {
@@ -36,6 +38,11 @@ function generateJWT(user)
         token: "Bearer " + signedToken,
         expires: expiresIn
       }
+}
+
+function validateJWT(jwt)
+{
+    console.log(jsonwebtoken.verify(publicKey, jwt))
 }
 
 module.exports = {validatePassword, generateDatabaseRecord, generateJWT}

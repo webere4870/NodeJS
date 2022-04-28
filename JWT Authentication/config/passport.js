@@ -1,17 +1,17 @@
 const passport = require('passport')
 const User = require('mongoose').model('userModel')
 const fs = require('fs')
-const passport = require('passport')
+
 const JWTStrategy = require('passport-jwt').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt
 
 // To decrypt
-const publicKey = fs.readFileSync(__dirname + "/keys/id_rsa_pub.pem", 'utf-8')
+const publicKey = fs.readFileSync("./keys/id_rsa_pub.pem", 'utf-8')
 
 const options = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     // This is the verification
-    secretOrKey: PUB_KEY,
+    secretOrKey: publicKey,
     algorithms: ['RS256']
 };
 
@@ -19,6 +19,7 @@ const strategy = new JWTStrategy(options, async (payload, done)=>
 {
     try
     {
+        console.log("made it to her in the workflow")
         const user = await User.findOne({_id: payload.sub})
         if(user)
         {
@@ -37,4 +38,3 @@ const strategy = new JWTStrategy(options, async (payload, done)=>
 
 passport.use(strategy)
 
-module.exports = passport
