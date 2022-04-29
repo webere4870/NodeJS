@@ -54,8 +54,7 @@ router.post('/register', async (req, res)=>
         console.log(user)
         const tokenObject = generateJWT(user)
         console.log(tokenObject)
-        res.setHeader('authorization', tokenObject.token);
-        res.render('index')
+        res.json({token: tokenObject.token, expires: tokenObject.expires})
     })
 })
 

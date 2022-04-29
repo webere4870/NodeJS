@@ -14,6 +14,7 @@ app.set('view engine', 'ejs')
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 app.use(expressLayouts)
+app.use(express.static(__dirname +"/static"))
 app.use(passport.initialize())
 app.use('/', routes)
 
