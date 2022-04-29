@@ -1,12 +1,11 @@
-
-
 let jwt;
 
 $('#register').submit(async (evt)=>
 {
     evt.preventDefault()
-    let username = $("#username").text();
-    let password = $("#password").text();
+    let username = $("#username").val();
+    let password = $("#password").val();
+    console.log(username)
     let userObject = {username: username, password: password}
     let res = await fetch('/register',
     {
@@ -16,5 +15,5 @@ $('#register').submit(async (evt)=>
     })
     let json = await res.json()
     jwt = json.token
-    console.log(json)
+    console.log(jwt)
 })

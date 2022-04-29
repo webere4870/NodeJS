@@ -1,6 +1,7 @@
 const express = require('express')
 const passport = require('passport')
 const mongoose = require('mongoose')
+const cookieParser = require('cookie-parser')
 const app = express()
 const expressLayouts = require('express-ejs-layouts')
 
@@ -14,6 +15,7 @@ app.set('view engine', 'ejs')
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 app.use(expressLayouts)
+app.use(cookieParser())                         // Before routes
 app.use(express.static(__dirname +"/static"))
 app.use(passport.initialize())
 app.use('/', routes)

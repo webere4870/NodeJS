@@ -1,13 +1,19 @@
 const express = require('express')
 const router = express.Router()
 const User = require('mongoose').model('userModel')
-const {validatePassword, generateDatabaseRecord, generateJWT} = require('../utils/generateJWT')
+const {validatePassword, generateDatabaseRecord, generateJWT, validateRefresh} = require('../utils/generateJWT')
 const dayjs = require('dayjs')
 const crypto = require('crypto')
 const { validate } = require('../config/userModel')
 const passport = require('passport')
+const fs = require('fs')
 
-router.get('/protected', passport.authenticate('jwt', {session: false}),(req, res)=>
+const refreshPrivate = fs.readFileSync(__dirname + "/../keys/id_rsa_priv_refresh.pem", 'utf-8')
+const refreshPublic = fs.readFileSync(__dirname + "/../keys/id_rsa_pub_refresh.pem", 'utf-8')
+const privateKey = fs.readFileSync(__dirname + "/../keys/id_rsa_priv.pem", 'utf-8')
+const publicKey = fs.readFileSync(__dirname + "/../keys/id_rsa_pub.pem", 'utf-8')
+
+router.get('/protected', validateRefresh,(req, res)=>
 {
     res.render('protected')
 })
@@ -46,14 +52,17 @@ router.get('/register', (req, res)=>
 router.post('/register', async (req, res)=>
 {
     const {username, password} = req.body
-    console.log(username)
     let userRecord = generateDatabaseRecord(password)
     userRecord.username = username
     User.create(userRecord).then((user)=>
     {
         console.log(user)
-        const tokenObject = generateJWT(user)
-        console.log(tokenObject)
+        const tokenObject = generateJWT(user, privateKey)
+        const temp = "Bearer " + tokenObject.token
+        tokenObject.token = temp 
+        const refreshToken = generateJWT(user, refreshPrivate)
+        console.log(tokenObject, refreshToken)
+        res.cookie("refresh", refreshToken.token, {httpOnly: true, maxAge: 1000000})
         res.json({token: tokenObject.token, expires: tokenObject.expires})
     })
 })

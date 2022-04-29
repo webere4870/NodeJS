@@ -15,10 +15,10 @@ function generateKeyPair()
         }
     });
 
-    fs.writeFileSync(__dirname + '/id_rsa_pub.pem', keyPair.publicKey); 
+    fs.writeFileSync(__dirname + '/id_rsa_pub_refresh.pem', keyPair.publicKey); 
     
     // Create the private key file
-    fs.writeFileSync(__dirname + '/id_rsa_priv.pem', keyPair.privateKey);
+    fs.writeFileSync(__dirname + '/id_rsa_priv_refresh.pem', keyPair.privateKey);
 }
 
 generateKeyPair()
